@@ -8,6 +8,9 @@ const express = require("express");
 const app = express();
 const port = 3000;
 
+app.use(express.json());
+app.use(express.static('client'));
+
 // Any of these routes will get thrown into the rulesRouter
 app.get("/", (req, res) => {
     res.json({message: "hello world"});
@@ -15,5 +18,5 @@ app.get("/", (req, res) => {
 
 // Start the web server
 app.listen(port, () => {
-  console.log(`listening on port http://localhost:${port}`);
+    console.log(`listening on port http://localhost:${port}`);
 });
