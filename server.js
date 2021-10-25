@@ -1,15 +1,10 @@
 // Packages for express
 const express = require("express");
 const textAnalysisRouter = require("./controllers/textAnalysis");
-// Load the .env file if it exists
+
+// Load the .env and configure it. 
 const dotenv = require("dotenv");
-// need to configure the path the .env
 dotenv.config();
-
-
-
-// Packages for sessions / API calls
-// const dotenv = require("dotenv");
 
 // Express server config
 const app = express();
@@ -23,7 +18,7 @@ app.get("/", (req, res) => {
     res.json({message: "hello world"});
 });
 
-// API
+// router for API for text analysis
 app.use("/api/textAnalysis", textAnalysisRouter);
 
 // Start the web server

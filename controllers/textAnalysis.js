@@ -5,10 +5,12 @@ const router = express.Router();
 // Run this to able to parse through body
 router.use(express.json());
 
+// Test endpoint
 router.get("/", (req, res) => {
     res.json({message: "HELLO WORLD"});
 })
 
+// Endpoint for text analysis. Sample JSON request body = {documents = ["sentence 1", "sentence 2"]}
 router.post("/", (req, res) => {
     console.log("analysing text")
     const {documents} = req.body 
