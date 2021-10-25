@@ -17,47 +17,60 @@ const { TextAnalyticsClient, AzureKeyCredential } = require("@azure/ai-text-anal
 
 // Load the .env file if it exists
 const dotenv = require("dotenv");
+
 // need to configure the path the .env
 dotenv.config({path:"../.env"});
-
-console.log(process.env["ENDPOINT"]);
 
 // You will need to set these environment variables or edit the following values
 const endpoint = process.env.ENDPOINT || "<cognitive services endpoint>";
 const apiKey = process.env.TEXT_ANALYTICS_API_KEY || "<api key>";
 
 const documents = [
-"I had the best day of my life.",
+"I had the best day of my life. This was a waste of my time. The speaker put me to sleep.",
 "This was a waste of my time. The speaker put me to sleep.",
 "It's actually worse: 18 years from now, a home in Sydney will likely cost twice as much, at least, while wages will only increase by a comparably small amount."
 ];
 
-async function main() {
-console.log("=== Analyze Sentiment Sample ===");
+// Function that 
+async function analyseText(documents) {
 
-const client = new TextAnalyticsClient(endpoint, new AzureKeyCredential(apiKey));
+    try {
+        // Create a new instance of the text analysis client
+        const client = new TextAnalyticsClient(endpoint, new AzureKeyCredential(apiKey));
 
-const results = await client.analyzeSentiment(documents);
+        // Return the results object after analysing sentiment
+        const sentimentRes = await client.analyzeSentiment(documents);
 
-for (let i = 0; i < results.length; i++) {
-    const result = results[i];
-    console.log(`- Document ${result.id}`);
-    if (!result.error) {
-    console.log(`\tDocument text: ${documents[i]}`);
-    console.log(`\tOverall Sentiment: ${result.sentiment}`);
-    console.log("\tSentiment confidence scores: ", result.confidenceScores);
-    console.log("\tSentences");
-    for (const { sentiment, confidenceScores, text } of result.sentences) {
-        console.log(`\t- Sentence text: ${text}`);
-        console.log(`\t  Sentence sentiment: ${sentiment}`);
-        console.log("\t  Confidence scores:", confidenceScores);
-    }
-    } else {
-    console.error(`  Error: ${result.error}`);
+        // The response will have error undefined in OK.
+        if (!sentimentRes.error) {
+
+            // Remove the statistics and model Version
+            for (let key of ["statistics","modelVersion"]) {
+                delete sentimentRes[key];
+            }
+
+            // Go through sentiment response for each "document string" and filter out statistics and warnings
+            sentimentRes.forEach( (documentSentiment) => {
+                let deleteStrings = ["statistics", "warnings"]
+                for (let key of deleteStrings) {
+                    delete documentSentiment[key];
+                }
+            })
+
+            const sentimentJSON = {"documents": sentimentRes};
+            return sentimentJSON;
+
+        } else {
+            // Return an error json
+            return {"error": `sentiment analysis failed ${sentimentRes.error}`}
+        }
+
+
+    } catch(err) {
+        console.error("The sample encountered an error:", err);
     }
 }
-}
 
-main().catch((err) => {
-console.error("The sample encountered an error:", err);
-});
+// Print out to the command line
+let analysis = analyseText(documents);
+analysis.then((value) => console.log(value));
