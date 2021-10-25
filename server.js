@@ -1,6 +1,12 @@
 // Packages for express
 const express = require("express");
 const textAnalysisRouter = require("./controllers/textAnalysis");
+// Load the .env file if it exists
+const dotenv = require("dotenv");
+// need to configure the path the .env
+dotenv.config();
+
+
 
 // Packages for sessions / API calls
 // const dotenv = require("dotenv");
@@ -22,5 +28,6 @@ app.use("/api/textAnalysis", textAnalysisRouter);
 
 // Start the web server
 app.listen(port, () => {
+    console.log(process.env.ENDPOINT)
     console.log(`listening on port http://localhost:${port}`);
 });
