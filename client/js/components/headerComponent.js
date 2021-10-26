@@ -15,6 +15,12 @@ function renderAuthenticatedHeader() {
         <li class="nav-item">
           <a class="nav-link" id="Documents">Documents</a>
         </li>
+        <li class="nav-item">
+          <a class="nav-link" id="Login">Login</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="Logout">Logout</a>
+        </li>
       </ul>
       <form class="d-flex">
         <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -44,6 +50,12 @@ function onHeaderSelected(e) {
         case "Documents":
             renderDocumentsPage();
             break;
+        case "Login":
+            renderLogin();
+            break;
+        case "Logout":
+            logout();
+            break
         default:
             renderHomePage();
     }

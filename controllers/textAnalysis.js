@@ -12,7 +12,6 @@ router.get("/", (req, res) => {
 
 // Endpoint for text analysis. Sample JSON request body = {documents = ["sentence 1", "sentence 2"]}
 router.post("/", (req, res) => {
-    console.log("analysing text")
     const {documents} = req.body 
     textAnalysis(documents).then( (response) => {
         res.json(response);

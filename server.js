@@ -41,6 +41,5 @@ app.use("/api/textAnalysis", textAnalysisController);
 
 // Start the web server
 app.listen(port, () => {
-    console.log(process.env.ENDPOINT)
     console.log(`listening on port http://localhost:${port}`);
 });

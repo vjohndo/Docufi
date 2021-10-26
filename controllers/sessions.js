@@ -12,7 +12,6 @@ router.post('/', (req, res) => {
         if (!dbRes) {
             res.status(406).json({ message: 'login details not on file' })
         } else {
-            console.log(dbRes);
             const email = dbRes.email 
             req.session.email = email // Can put other things in the session too
             res.json({ message: 'SUCCESS' })
@@ -22,16 +21,16 @@ router.post('/', (req, res) => {
     })
 });
 
-// Check login - on CLIENT SIDE: axios.get("/api/sessions").then((res) => console.log(res.data));
+// Check login - to check on CLIENT SIDE: axios.get("/api/sessions").then((res) => console.log(res.data));
 router.get("/", (req, res) => {
-    if (req.session.username) {
-        res.json({ username: req.session.username });
+    if (req.session.email) {
+        res.json({ email: req.session.email });
     } else {
-        res.status(403).json({ message: "Not logged in" });
+        res.json({ message: "Not logged in" }); // Add in 403 error later
     }
 });
 
-// Delete login - on CLIENT SIDE: - on CLIENT SIDE: axios.get("/api/sessions").then((res) => console.log(res.data));
+// Delete login - to check on CLIENT SIDE:  axios.delete("/api/sessions").then((res) => console.log(res.data));
 router.delete("/", (req, res) => {
     req.session.destroy();
     res.json({ message: "You have logged out successfully" });
