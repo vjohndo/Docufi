@@ -1,6 +1,11 @@
+* {
+  box-sizing: border-box;
+}
+
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  min-width: 490px;
 }
 
 a {
@@ -10,3 +15,5 @@ a {
 .nav-item {
   cursor: pointer;
 }
+
+
