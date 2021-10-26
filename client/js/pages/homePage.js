@@ -6,7 +6,7 @@ function renderHomePage() {
             <div class="drop-zone"> 
                 <span class="btn btn-primary">Browse</span> 
                 <span class="drop-message"> or drop file</span> 
-                <input class="file-input" type="file" multiple="">
+                <input class="file-input" type="file">
             </div>
         </main>
         <aside class="col-sm-4">
@@ -20,14 +20,19 @@ function renderHomePage() {
     let fileInputElement = page.querySelector('.file-input');
 
     // File dropped into drop zone
-    fileInputElement.addEventListener('change', x => {
+    fileInputElement.addEventListener('change',  x => {
         const selectedFile = x.target.files[0];
         dropZone.classList.remove('on-drop');
-        console.log(selectedFile);
 
-        // TODO: Save file to database
+        const dataForm = new FormData();
+        dataForm.append('file', x.target.files[0]);
+        axios.post('/api/file', dataForm).then(res => {
 
+            })
+            .catch(err => console.log(err));
 
+        // console.log(selectedFile);
+        // uploadFile(selectedFile);
     });
 
     // File dragged INTO drop zone
@@ -40,5 +45,23 @@ function renderHomePage() {
        dropZone.classList.remove('on-drop');
     });
 }
+
+
+function uploadFile(selectedFile) {
+    let reader = new FileReader();
+    reader.readAsDataURL(selectedFile);
+    reader.onload = async () => {
+        console.log(reader.result);
+        axios.post('/api/file',{"file" : reader.result}).then(result => {
+            console.log(result);
+        });
+    };
+
+    reader.onloadend = () => {
+        console.log('Reading finished');
+    };
+}
+
+
 
 

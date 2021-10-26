@@ -1,9 +1,13 @@
 const db = require('../database/db');
 
 const Users = {
-    getById(id) {
-        return db
-            .query("SELECT * FROM Users where Id = $1", [id])
-            .then((dbRes) => dbRes.rows);
+    async getUserByEmail(email) {
+        const sql = {
+            text: 'SELECT * FROM Users WHERE email = $1',
+            values: [email]
+        };
+        return await db.query(sql).then(dbRes => dbRes.rows);
     }
 }
+
+module.exports = Users;
