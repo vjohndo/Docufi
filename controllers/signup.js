@@ -10,9 +10,8 @@ router.post('/', (req, res) => {
 
     Users.emailExists(email)
         .then( (dbRes) => {
-            console.log(dbRes)
             if (dbRes) {
-                res.status(406).json({ error: 'Email already exists' })
+                res.status(406).json({ message: 'Email already exists' })
             } else {
                 req.session.email = email
                 Users.signUp(email, firstname, lastname, password)
@@ -20,7 +19,7 @@ router.post('/', (req, res) => {
             }
         }).catch( (err) => {
             console.log(err)
-            res.status(500).json({ error: 'DB NOT WORKING' })
+            res.status(500).json({ message: 'DB NOT WORKING' })
         })
 });
 

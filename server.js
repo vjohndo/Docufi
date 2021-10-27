@@ -37,7 +37,7 @@ app.use(
 );
 app.use("/api/sessions", sessionsController);
 
-// Sign up
+// Sign up route
 app.use("/api/signup", signupController);
 
 // router for API for text analysis

@@ -19,6 +19,9 @@ function renderAuthenticatedHeader() {
           <a class="nav-link" id="Login">Login</a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" id="Signup">Signup</a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" id="Logout">Logout</a>
         </li>
       </ul>
@@ -55,6 +58,9 @@ function onHeaderSelected(e) {
             break;
         case "Logout":
             logout();
+            break
+        case "Signup":
+            renderSignup();
             break
         default:
             renderHomePage();
