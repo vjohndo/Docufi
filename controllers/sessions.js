@@ -2,21 +2,29 @@
 const express = require('express');
 const Users = require('../models/users');
 const router = express.Router();
+
 router.use(express.json());
 
 
 router.post('/', (req, res) => {
     // Get user's name from request, look up in the database, check the password etc.
     // req.body should be {"email":"<email>", "password":"<password>"}
-    Users.checkLogin(req.body).then( (dbRes) => {
+    const {email, password} = req.body;
+
+    Users.checkLogin(email, password).then( (dbRes) => {
+        console.log(dbRes);
         if (!dbRes) {
-            res.status(406).json({ message: 'login details not on file' })
+            res.status(406).json({ message: 'Login details are not valid' })
         } else {
-            const email = dbRes.email 
+
+            // const hashedPassword = dbRes.Hash
+            // const email = dbRes.email 
+
             req.session.email = email // Can put other things in the session too
             res.json({ message: 'SUCCESS' })
         }
     }).catch( (err) => {
+        console.log(err)
         res.status(500).json({ message: 'DB NOT WORKING' })
     })
 });
