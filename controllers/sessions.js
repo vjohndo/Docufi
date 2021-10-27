@@ -16,10 +16,6 @@ router.post('/', (req, res) => {
         if (!dbRes) {
             res.status(406).json({ message: 'Login details are not valid' })
         } else {
-
-            // const hashedPassword = dbRes.Hash
-            // const email = dbRes.email 
-
             req.session.email = email // Can put other things in the session too
             res.json({ message: 'SUCCESS' })
         }

@@ -6,10 +6,11 @@ const textAnalysisController = require("./controllers/textAnalysis");
 const dotenv = require("dotenv");
 dotenv.config();
 
-// Packages for sessions (npm install express-session connect-pg-simple)
+// Packages for logins, sessions (npm install express-session connect-pg-simple)
 const expressSession = require("express-session"); // Express library to handle sessions
 const pgSession = require("connect-pg-simple")(expressSession); // Creates a session instance for this express session 
 const sessionsController = require("./controllers/sessions");
+const signupController = require("./controllers/signup")
 const db = require("./database/db"); // The postgres connection we already have
 
 // Express server config
@@ -35,6 +36,9 @@ app.use(
     })
 );
 app.use("/api/sessions", sessionsController);
+
+// Sign up
+app.use("/api/signup", signupController);
 
 // router for API for text analysis
 app.use("/api/textAnalysis", textAnalysisController);
