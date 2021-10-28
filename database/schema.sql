@@ -7,6 +7,8 @@ CREATE TABLE Users (
     Email TEXT,
     FirstName TEXT,
     LastName Text,
+    -- We will deactivate accounts - not delete
+    AccountIsActive bool,
     Hash Text,
     PRIMARY KEY (Id)
 );
@@ -15,15 +17,17 @@ INSERT INTO Users (Email, FirstName, LastName, Hash) VALUES ('shaunn@me.com', 'S
 
 CREATE TABLE Files (
     Id SERIAL,
-    Name TEXT,
-    UserId INT,
-    SizeBytes INTEGER,
-    Type TEXT,
+    DocumentName TEXT,
+    OriginalName TEXT,
+    FileName TEXT,
+    FilePath TEXT,
+    UserId INT REFERENCES Users (Id),
+    FileSize INTEGER,
+    FileType TEXT,
+    -- DateUploaded is ISO
     DateUploaded DATE,
-    PRIMARY KEY (Id),
-    CONSTRAINT fk_user
-            FOREIGN KEY (Id)
-                   REFERENCES Users(Id)
+    LastModifiedTime DATE,
+    PRIMARY KEY (Id)
 );
 
 

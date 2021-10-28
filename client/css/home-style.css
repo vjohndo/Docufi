@@ -6,6 +6,10 @@
     margin-bottom: 10px;
 }
 
+.hide {
+    display: none;
+}
+
 .drop-zone {
     position: relative;
     display: flex;
@@ -22,8 +26,18 @@
 .selected-zone {
     border: 1px dashed lightgray;
     border-radius: 5px;
-    height: 100px;
+    min-height: 100px;
+    height: auto;
     background-color: #F8F9FA;
+}
+
+.accordion-button {
+    font-size: x-small;
+}
+
+.accordion-body {
+    font-size: x-small;
+    color: dimgray;
 }
 
 .drop-message {
