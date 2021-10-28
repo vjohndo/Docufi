@@ -1,10 +1,6 @@
-// Call the db module (creates an instance of db Pool)
-const db = require("../database/db");
-const Encryption = require("./encryption")
+const db = require('../database/db');
+const Encryption = require("./encryption");
 
-
-
-// Users model containing various methods
 const Users = {
     checkLogin(email, password) {
         // Will need to later implement Bcrypt
@@ -16,7 +12,6 @@ const Users = {
             if (!dbRes.rows[0]) {
                 return false;
             }
-            console.log(password, dbRes.rows[0].hash);
             let result = Encryption.isValidPassword(password, dbRes.rows[0].hash);
             return result;
             
@@ -40,6 +35,13 @@ const Users = {
             values: [email]
         };
         return db.query(sql).then( (dbRes) => dbRes.rows[0] ? true : false)
+    },
+    getUserByEmail(email) {
+        const sql = {
+            text: 'SELECT * FROM Users WHERE email = $1',
+            values: [email]
+        };
+        return db.query(sql).then(dbRes => dbRes.rows);
     }
 }
 
