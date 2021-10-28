@@ -1,7 +1,7 @@
 // npm install @azure/ai-text-analytics
 // npm install dotenv
 
-// Helper function that processes 
+// Helper function that processes the azure response
 const azureResponseFilter= (responseObject) => {
     // The response will have error undefined in OK.
     if (!responseObject.error) {
