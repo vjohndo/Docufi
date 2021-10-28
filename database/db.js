@@ -1,9 +1,7 @@
 const pg = require("pg");
 
 const db = new pg.Pool({
-    database: "docufi",
-    user: 'admin',
-    password: 'admin'
+    database: "docufi"
 });
 
 module.exports = db;
