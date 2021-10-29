@@ -23,11 +23,7 @@ async function renderAuthenticatedHeader() {
                 <a class="nav-link" id="Signup">Signup</a>
                 </li>
                 <li class="nav-item">
-<<<<<<< HEAD
                 <a class="nav-link text-danger" id="Logout">Logout</a>
-=======
-                <a class="nav-link" id="Logout">Logout</a>
->>>>>>> 93d0238684b40e6e76c18c5e5e302d61a52b3995
                 </li>
             </ul>
             <form class="d-flex">
