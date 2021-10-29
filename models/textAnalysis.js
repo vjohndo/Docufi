@@ -23,7 +23,7 @@ const azureResponseFilter= (responseObject) => {
         return responseJSON;
     } else {
         // Return an error json
-        return {"error": `language analysis failed ${responseObject.error}`}
+        return {"error": `text analysis failed ${responseObject.error}`}
     }
 }
 
