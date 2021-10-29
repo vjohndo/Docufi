@@ -2,6 +2,7 @@ function renderLogin() {
     // Get the page, create a form
     const page = document.getElementById("page");
     page.replaceChildren("");
+<<<<<<< HEAD
     // TO DO.. clean up the HTML
     page.innerHTML = `
         <div class="container-md">
@@ -11,6 +12,17 @@ function renderLogin() {
                         <div class="mb-3">
                             <label for="email" class="form-label">Email address</label>
                             <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email">
+=======
+    page.innerHTML = `
+        <div class="container-md">
+            <div class="row">
+                <div class="col-sm-6">
+                    <form id="loginForm" method="POST">
+                        <div class="mb-3">
+                            <label for="exampleInputEmail1" class="form-label">Email address</label>
+                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email">
+                            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+>>>>>>> 93d0238684b40e6e76c18c5e5e302d61a52b3995
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Password</label>
@@ -64,7 +76,12 @@ function renderLogin() {
                 console.log(err.response.data.message);
             })            
     })
+<<<<<<< HEAD
 } 
+=======
+    
+}
+>>>>>>> 93d0238684b40e6e76c18c5e5e302d61a52b3995
 
 function logout() {
     axios.delete('/api/sessions').then((res) => {
