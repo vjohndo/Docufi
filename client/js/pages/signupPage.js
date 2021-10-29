@@ -69,12 +69,7 @@ function renderSignup() {
             axios.post('/api/signup', data)
                 .then((res) => {
                     // on success render the Home Page
-                    const login = document.getElementById("Login");
-                    const signup = document.getElementById("Signup");
-                    const logout = document.getElementById("Logout");
-                    login.classList.toggle("hidden");
-                    signup.classList.toggle("hidden");
-                    logout.classList.toggle("hidden");
+                    toggleHeaderSessionOptions();
                     renderHomePage();
                 })
                 .catch(err => {
