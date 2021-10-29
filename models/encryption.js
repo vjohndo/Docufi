@@ -9,7 +9,4 @@ const Encryption = {
     }
 }
 
-// console.log(Encryption.generateHash("password"));
-// console.log(Encryption.isValidPassword("password", "$2b$10$7hVAGqWiNSvVtQadwlKXmOA71GYJT0bpWFrImJQXPZpROuaZ.p5Bi"))
-
 module.exports = Encryption;
