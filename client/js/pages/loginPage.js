@@ -10,18 +10,18 @@ function renderLogin() {
                     <form id="loginForm" method="POST">
                         <div class="mb-3">
                             <label for="email" class="form-label">Email address</label>
-                            <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email">
+                            <input type="email" class="form-control" aria-describedby="emailHelp" name="email">
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="exampleInputPassword1" name="password">
+                            <input type="password" class="form-control" name="password">
                         </div>
                         <button id="submitLogin" type="submit" class="btn btn-primary">Submit</button>
                     </form>
-                <div class="col">
+                </div>
             </div>
             <div class="row">
-                <div class="col-sm-6">
+                <div class="col-md-4">
                     <div id="loginMessage" class="alert alert-danger hidden" role="alert">
                     </div>
                 </div>
@@ -48,12 +48,7 @@ function renderLogin() {
         axios.post('/api/sessions', data)
             .then((res) => {
                 // on success render the Home Page
-                const login = document.getElementById("Login");
-                const signup = document.getElementById("Signup");
-                const logout = document.getElementById("Logout");
-                login.classList.toggle("hidden");
-                signup.classList.toggle("hidden");
-                logout.classList.toggle("hidden");
+                toggleHeaderSessionOptions();
                 renderHomePage();
             })
             .catch(err => {
@@ -68,6 +63,7 @@ function renderLogin() {
 
 function logout() {
     axios.delete('/api/sessions').then((res) => {
-        location.href = "/"; // Remove after fixing the login
+        toggleHeaderSessionOptions();
+        renderHomePage();
     })
 }

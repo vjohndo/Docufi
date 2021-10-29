@@ -78,3 +78,11 @@ function onHeaderSelected(e) {
     }
 }
 
+function toggleHeaderSessionOptions() {
+    const login = document.getElementById("Login");
+    const signup = document.getElementById("Signup");
+    const logout = document.getElementById("Logout");
+    login.classList.toggle("hidden");
+    signup.classList.toggle("hidden");
+    logout.classList.toggle("hidden");
+}
