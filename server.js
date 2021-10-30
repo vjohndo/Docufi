@@ -13,6 +13,7 @@ const pgSession = require("connect-pg-simple")(expressSession); // Creates a ses
 const sessionsController = require("./controllers/sessions");
 const signupController = require("./controllers/signup")
 const db = require("./database/db"); // The postgres connection we already have
+const errorHandler = require('./middleware/errorhandler');
 
 // Express server config
 const app = express();
@@ -45,6 +46,8 @@ app.use("/api/signup", signupController);
 // router for API for text analysis
 app.use("/api/textAnalysis", textAnalysisController);
 app.use("/api/file", fileController);
+
+app.use(errorHandler);
 
 // Start the web server
 app.listen(port, () => {
