@@ -7,7 +7,7 @@ async function renderHomePage() {
                 <span class="btn btn-primary">Browse</span> 
                 <span class="drop-message"> or drop file</span> 
                 <input class="file-input" type="file">
-            </div>
+            </div>  
             <div class="progress hide">
                 <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
             </div>

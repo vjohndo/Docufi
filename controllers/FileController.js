@@ -6,6 +6,8 @@ const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 const pdf = require("pdf-extraction");
 const fs = require('fs');
+const azureAnalyzeText = require('../models/textAnalysis');
+const {raw} = require("express");
 
 router.use(express.json());
 
@@ -34,21 +36,67 @@ router.post("/", upload.single("file"), async (req, res) => {
 
     let dataBuf = fs.readFileSync(req.file.path);
 
-    // TODO: Consider whether we make this call or not
-    await pdf(dataBuf)
-        .then(x => {
-            // Return File Details to the browser
-            console.log(x.text);
-            res.json({
-                message: "Uploaded successfully",
-                fileInfo: fileInfo
-            });
-        })
-        .catch(err => {
-            console.log(err);
-            res.json({message: "Upload Failed"});
+    const extractedData = await pdf(dataBuf);
+    const result = await analyzeAndProcessDocuments(extractedData.text)
+
+    if (!result.success) {
+        res.status(406).json(result);
+    } else {
+        res.json({
+            message: "Uploaded successfully",
+            fileInfo: fileInfo
         });
-})
+    }
+});
+
+async function analyzeAndProcessDocuments(text) {
+    // split extracted text to conform to AzureCS requirements
+    text = text.replace(/(\s+)/gm, " ");
+    const textArr = text.match(/.{1,5000}/g);
+
+    // Call AAT Service
+    const rawResult = await azureAnalyzeText(textArr);
+
+    // Get and remove erroneous datasets
+    const errors = [];
+    for (const item in rawResult) {
+        const collectionObject = rawResult[item];
+        collectionObject.documents.forEach(obj => {
+           if (obj.error) {
+               errors.push(obj.error);
+               rawResult[item].error = true;
+               console.log(`Error in analysis: ${JSON.stringify(obj.error)}`)
+           }
+        });
+    }
+
+    // only take data with no errors
+    const sanitizedData = Object.entries(rawResult).filter(x => !x[1].error).map(x => {
+        return { [x[0]] : [x[1]]  }
+    })
+
+    // Return if no data found
+    if (sanitizedData.length < 1) {
+        return {
+            'success': false,
+            'message': errors
+        }
+    }
+
+
+    if (!sanitizedData) {
+        console.log('No documents');
+        return {
+            'success': false,
+            'message': 'No documents found in file'
+        }
+    }
+
+    return {
+        'success': true,
+        'message': 'Documents analyzed successfully'
+    }
+}
 
 
 module.exports = router;
