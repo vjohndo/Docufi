@@ -1,11 +1,12 @@
 {
   "name": "docufi",
   "version": "1.0.0",
-  "description": "",
+  "description": "Text NLP Processing",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "node server.js",
+    "startmon": "nodemon server.js"
   },
   "repository": {
     "type": "git",
@@ -27,5 +28,7 @@
     "multer": "^1.4.3",
     "pdf-extraction": "^1.0.2",
     "pg": "^8.7.1"
-  }
+  },
+  "devDependencies": {},
+  "keywords": []
 }

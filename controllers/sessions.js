@@ -12,7 +12,6 @@ router.post('/', (req, res) => {
     const {email, password} = req.body;
 
     Users.checkLogin(email, password).then( (dbRes) => {
-        console.log(dbRes);
         if (!dbRes) {
             res.status(406).json({ message: 'Login details are not valid' })
         } else {
@@ -30,7 +29,16 @@ router.get("/", (req, res) => {
     if (req.session.email) {
         res.json({ email: req.session.email });
     } else {
-        res.json({ message: "Not logged in" }); // Add in 403 error later
+        res.status(403).json({ message: "Not logged in" });
+    }
+});
+
+// Check login - to check on CLIENT SIDE: axios.get("/api/sessions").then((res) => console.log(res.data));
+router.get("/loggedIn", (req, res) => {
+    if (req.session.email) {
+        res.json({ isGood: true });
+    } else {
+        res.json({ notGood: true}); 
     }
 });
 
