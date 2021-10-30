@@ -32,7 +32,7 @@ app.use(
     expressSession({
         store: new pgSession({ // "storing the session in DB rather than memory"
             pool: db, // Connects to our postgres db
-            createTableIfMissing: true, // Creates a session table in your database 
+            createTableIfMissing: true, // Creates a session table in your database
         }),
         secret: process.env.EXPRESS_SESSION_SECRET_KEY, // Access the secret key from .env
     })
