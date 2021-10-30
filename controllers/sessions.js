@@ -38,7 +38,7 @@ router.get("/loggedIn", (req, res) => {
     if (req.session.email) {
         res.json({ isGood: true });
     } else {
-        res.json({ notGood: false}); 
+        res.json({ notGood: true}); 
     }
 });
 
