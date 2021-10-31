@@ -53,7 +53,7 @@ function renderSignup() {
         const signupPassword = document.getElementById("signupPassword");
         const signupPasswordConfirm = document.getElementById("signupPasswordConfirm");
 
-        if (signupPassword.value != signupPasswordConfirm.value) {
+        if (signupPassword.value !== signupPasswordConfirm.value) {
             const signupMessage = document.getElementById("signupMessage");
             signupMessage.textContent = "Passwords must match!";
             signupMessage.classList.remove("hidden");
@@ -69,7 +69,7 @@ function renderSignup() {
             axios.post('/api/signup', data)
                 .then((res) => {
                     // on success render the Home Page
-                    toggleHeaderSessionOptions();
+                    renderAuthenticatedHeader();
                     renderHomePage();
                 })
                 .catch(err => {

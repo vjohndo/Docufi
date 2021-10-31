@@ -17,6 +17,7 @@ function renderLogin() {
                             <input type="password" class="form-control" name="password">
                         </div>
                         <button id="submitLogin" type="submit" class="btn btn-primary">Submit</button>
+                        <button id="signup" type="submit" class="btn btn-secondary">Sign Up</button>
                     </form>
                 </div>
             </div>
@@ -48,7 +49,7 @@ function renderLogin() {
         axios.post('/api/sessions', data)
             .then((res) => {
                 // on success render the Home Page
-                toggleHeaderSessionOptions();
+                renderAuthenticatedHeader();
                 renderHomePage();
             })
             .catch(err => {
@@ -58,12 +59,17 @@ function renderLogin() {
                 loginMessage.classList.remove("hidden");
                 console.log(err.response.data.message);
             })            
-    })
+    });
+
+    page.querySelector('#signup').addEventListener('click', e => {
+       renderSignup();
+    });
+
 } 
 
 function logout() {
     axios.delete('/api/sessions').then((res) => {
-        toggleHeaderSessionOptions();
-        renderHomePage();
+        toggleHeaderSessionOptions(false);
+        renderLogin();
     })
 }
