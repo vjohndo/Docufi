@@ -93,7 +93,6 @@ function uploadFile(selectedFile) {
     dataForm.append('file', selectedFile);
 
     uploadFileProgressStart();
-
     addLoadingIcon();
 
     axios.post('/api/file', dataForm, config).then(res => {
@@ -103,8 +102,10 @@ function uploadFile(selectedFile) {
         addItemToSelectedZone(OriginalName, FileFormat, FileName);
     })
     .catch(err => {
-        // TODO: Notify Error
-        console.log(err)
+        // TODO: progress bar error red
+        completeProgressBar();
+        removeLoadingIcon();
+        createAlert(err, AlertType.DANGER);
     });
 }
 

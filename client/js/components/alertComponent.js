@@ -34,6 +34,8 @@ function createAlertElement(alertMessage, alertType) {
         case AlertType.WARNING :
             alertElement.classList.add('alert-warning');
             break;
+        case AlertType.DANGER:
+            alertElement.classList.add('alert-danger');
         default:
             alertElement.classList.add('alert-primary');
             break;
@@ -45,5 +47,6 @@ function createAlertElement(alertMessage, alertType) {
 const AlertType = Object.freeze({
     SUCCESS: "alert-success",
     PRIMARY: "alert-primary",
-    WARNING: "alert-warning"
+    WARNING: "alert-warning",
+    DANGER: "alert-danger"
 });
