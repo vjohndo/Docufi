@@ -3,7 +3,6 @@
 }
 
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   min-width: 490px;
 }
@@ -18,4 +17,20 @@ a {
 
 .hidden {
     display: none;
+}
+
+.alert {
+  position: absolute;
+  bottom: 0;
+  right: 60px;
+}
+
+.alert .fas {
+  padding: 16px;
+}
+
+.loading{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
