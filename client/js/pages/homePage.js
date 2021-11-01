@@ -21,7 +21,7 @@ async function renderHomePage() {
     `;
 
     // Hook into existing p element for now to show logged in status. Will add to home page later.
-    let message = createElement('p',[],'Welcome to the Docufi');
+    let message = createElement('p',[],'Welcome to Docufi');
     const isLoggedIn = await axios.get("/api/sessions")
     message.textContent += (isLoggedIn.data.email) ? ` - Logged in with ${isLoggedIn.data.email}` : ` - Not Logged in`;
     page.appendChild(message);
