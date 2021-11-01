@@ -38,10 +38,19 @@ app.use(
         secret: process.env.EXPRESS_SESSION_SECRET_KEY, // Access the secret key from .env
     })
 );
-app.use("/api/sessions", sessionsController);
 
+
+app.use("/api/sessions", sessionsController);
 // Sign up route
 app.use("/api/signup", signupController);
+
+app.use((req, res, next) => {
+   if (!req.session.username) {
+       res.status(401).send();
+   } else {
+       next();
+   }
+});
 
 // router for API for text analysis
 app.use("/api/textAnalysis", textAnalysisController);
