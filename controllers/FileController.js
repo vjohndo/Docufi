@@ -9,9 +9,16 @@ const fs = require('fs');
 const azureAnalyzeText = require('../models/textAnalysis');
 const {raw} = require("express");
 
+
 router.use(express.json());
 
 router.get("/:id", (req, res) => {
+    res.json({message: "File Controller"});
+})
+
+// Get pending files
+router.get("/:name", (req, res) => {
+
     res.json({message: "File Controller"});
 })
 
@@ -34,13 +41,21 @@ router.post("/", upload.array("files"), async (req, res) => {
 
         let dataBuf = fs.readFileSync(file.path);
         const extractedData = await pdf(dataBuf);
-        const result = await analyzeAndProcessDocuments(extractedData.text);
-
-        fileInfo["TextAnalysis"] = result;
 
         // Write fileInfo to the db after getting the results
-        await Files.addFile(fileInfo);
+        const dbResult = await Files.addFile(fileInfo);
         uploadedItems.push(fileInfo);
+
+        const result = await analyzeAndProcessDocuments(extractedData.text);
+        fileInfo.TextAnalysis = result;
+        fileInfo.Processed = true;
+        await Files.updateFileById(fileInfo, dbResult[0].id);
+        // analyzeAndProcessDocuments(extractedData.text).then(async result => {
+        //     fileInfo.TextAnalysis = result;
+        //     await Files.updateFileById(fileInfo, dbResult[0].id);
+        // })
+        req.io.emit('fileAnalysisComplete', {"file" : fileInfo});
+
     }
 
     // verify # uploaded files were processed

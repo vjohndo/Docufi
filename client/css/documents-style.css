@@ -1,0 +1,5 @@
+#document-raw-text-wrapper, #document-analysis-wrapper {
+    height: 200px;
+    border: 1px solid lightgray;
+    border-radius: 8px;
+}
