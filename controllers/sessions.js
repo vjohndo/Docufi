@@ -7,8 +7,6 @@ router.use(express.json());
 
 
 router.post('/', (req, res) => {
-    // Get user's name from request, look up in the database, check the password etc.
-    // req.body should be {"email":"<email>", "password":"<password>"}
     const {email, password} = req.body;
 
     Users.checkLogin(email, password).then( (dbRes) => {
@@ -24,7 +22,7 @@ router.post('/', (req, res) => {
     })
 });
 
-// Check login - to check on CLIENT SIDE: axios.get("/api/sessions").then((res) => console.log(res.data));
+// Check user login status
 router.get("/", (req, res) => {
     if (req.session.email) {
         res.json({ email: req.session.email });
@@ -33,16 +31,17 @@ router.get("/", (req, res) => {
     }
 });
 
-// Check login - to check on CLIENT SIDE: axios.get("/api/sessions").then((res) => console.log(res.data));
+// Check user login status
 router.get("/loggedIn", (req, res) => {
     if (req.session.email) {
         res.json({ isGood: true });
     } else {
-        res.json({ notGood: true}); 
+        res.json({ notGood: true});
+
     }
 });
 
-// Delete login - to check on CLIENT SIDE:  axios.delete("/api/sessions").then((res) => console.log(res.data));
+// User logout
 router.delete("/", (req, res) => {
     req.session.destroy();
     res.json({ message: "You have logged out successfully" });

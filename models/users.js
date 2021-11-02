@@ -3,7 +3,6 @@ const Encryption = require("./encryption");
 
 const Users = {
     checkLogin(email, password) {
-        // Will need to later implement Bcrypt
         const sql = {
             text: "SELECT * FROM users WHERE email = $1",
             values: [email]
@@ -34,7 +33,7 @@ const Users = {
             text: "SELECT email FROM users WHERE email = $1",
             values: [email]
         };
-        return db.query(sql).then( (dbRes) => dbRes.rows[0] ? true : false)
+        return db.query(sql).then( (dbRes) => !!dbRes.rows[0])
     },
     getUserByEmail(email) {
         const sql = {
