@@ -1,8 +1,6 @@
-// npm install @azure/ai-text-analytics
-// npm install dotenv
-
 // Helper function that processes the azure response
-const azureResponseFilter= (responseObject) => {
+// Takes in a response object form azure, reference to an errors list, a keyString that references the final result object
+const azureResponseFilter= (responseObject, errorsList, keyString) => {
     // The response will have error undefined in OK.
     if (!responseObject.error) {
 
@@ -22,8 +20,8 @@ const azureResponseFilter= (responseObject) => {
         const responseJSON = {"documents": responseObject};
         return responseJSON;
     } else {
-        // Return an error json
-        return {"error": `text analysis failed ${responseObject.error}`}
+        errorsList.append(keyString)
+        return {"error": `text analysis failed: ${responseObject.error}`}
     }
 }
 
@@ -41,33 +39,33 @@ async function analyseText(documents) {
     // Create a new instance of the text analysis client
     const client = new TextAnalyticsClient(endpoint, new AzureKeyCredential(apiKey));
 
+    const errorsList = [];
+
     try {
-        // Return the results object after analysing sentiment
-        const sentimentRes = await client.analyzeSentiment(documents);
-        
-        // Return the language dectection results after detecting the language
+        // Get results for each type of analysis
+        const sentimentRes = await client.analyzeSentiment(documents);        
         const languageRes = await client.detectLanguage(documents);
-
-        // Return the key phrases
         const keyPhrasesRes = await client.extractKeyPhrases(documents);
-
-        // Return the entites
         const entitiesRes = await client.recognizeEntities(documents);
-
-        // Returns the PII entities
         const entityPiiRes = await client.recognizePiiEntities(documents);
-
-        // Recognises linked entities 
         const entityLinkingRes = await client.recognizeLinkedEntities(documents);
 
-        return {
-            "sentiment": azureResponseFilter(sentimentRes),
-            "languageDetection": azureResponseFilter(languageRes),
-            "keyPhrases": azureResponseFilter(keyPhrasesRes),
-            "entities": azureResponseFilter(entitiesRes),
-            "entityPII": azureResponseFilter(entityPiiRes),
-            "entityLinking": azureResponseFilter(entityLinkingRes)
+        // Create an analysed object
+        const analysisResult = {
+            "sentiment": azureResponseFilter(sentimentRes,errorsList,"sentiment"),
+            "languageDetection": azureResponseFilter(languageRes,errorsList,"languageDetection"),
+            "keyPhrases": azureResponseFilter(keyPhrasesRes,errorsList,"keyPhrases"),
+            "entities": azureResponseFilter(entitiesRes,errorsList,"entities"),
+            "entityPII": azureResponseFilter(entityPiiRes,errorsList,"entityPII"),
+            "entityLinking": azureResponseFilter(entityLinkingRes,errorsList,"entityLinking"),
         }
+
+        // If any errors, append to the output
+        if (errorsList.length > 0) {
+            analysisResult["errors"] = errorsList;
+        }
+
+        return analysisResult;
 
     } catch(err) {
         console.error("The sample encountered an error:", err);

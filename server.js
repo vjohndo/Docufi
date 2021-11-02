@@ -2,6 +2,7 @@
 const express = require("express");
 const textAnalysisController = require("./controllers/textAnalysis");
 const fileController = require("./controllers/FileController");
+const documentController = require("./controllers/DocumentController")
 
 // Load the .env and configure it. 
 const dotenv = require("dotenv");
@@ -39,21 +40,22 @@ app.use(
     })
 );
 
+app.use("/api/documents", documentController);
 
 app.use("/api/sessions", sessionsController);
-// Sign up route
+
 app.use("/api/signup", signupController);
 
 app.use((req, res, next) => {
-   if (!req.session.email) {
-       res.status(401).send();
-   } else {
-       next();
-   }
+    // sessions are being set as "email";
+    if (!req.session.email) {
+        res.status(401).send();
+    } else {
+        next();
+    }
 });
 
 // router for API for text analysis
-app.use("/api/textAnalysis", textAnalysisController);
 app.use("/api/file", fileController);
 
 app.use(errorHandler);
