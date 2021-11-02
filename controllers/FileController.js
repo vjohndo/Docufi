@@ -16,37 +16,42 @@ router.get("/:id", (req, res) => {
 })
 
 // Endpoint for text analysis. Sample JSON request body = {documents = ["sentence 1", "sentence 2"]}
-router.post("/", upload.single("file"), async (req, res) => {
-    console.log("Uploading: ",req.file.originalname);
+router.post("/", upload.array("files"), async (req, res) => {
     const user = await Users.getUserByEmail(req.session.email)
-    
-    const { originalname, filename, path, size, mimetype } = req.file;
-    const fileInfo = {
-        'FileName' : filename,
-        'OriginalName' : originalname,
-        'FilePath' : path,
-        'FileSize' : size,
-        'FileFormat' : mimetype,
-        'DateUploaded' : new Date(Date.now()).toISOString(),
-        'UserId' : user.id
-    };
+    const uploadedItems = [];
 
-    let dataBuf = fs.readFileSync(req.file.path);
-    const extractedData = await pdf(dataBuf);
-    const result = await analyzeAndProcessDocuments(extractedData.text);
+    for (let file of req.files) {
+        const { originalname, filename, path, size, mimetype } = file;
+        const fileInfo = {
+            'FileName' : filename,
+            'OriginalName' : originalname,
+            'FilePath' : path,
+            'FileSize' : size,
+            'FileFormat' : mimetype,
+            'DateUploaded' : new Date(Date.now()).toISOString(),
+            'UserId' : user.id
+        };
 
-    fileInfo["TextAnalysis"] = result;
+        let dataBuf = fs.readFileSync(file.path);
+        const extractedData = await pdf(dataBuf);
+        const result = await analyzeAndProcessDocuments(extractedData.text);
 
-    // Write fileInfo to the db after getting the results
-    await Files.addFile(fileInfo);
+        fileInfo["TextAnalysis"] = result;
 
-    if (!result) {
-        res.status(406).json(result);
-    } else {
+        // Write fileInfo to the db after getting the results
+        await Files.addFile(fileInfo);
+        uploadedItems.push(fileInfo);
+    }
+
+    // verify # uploaded files were processed
+    if (uploadedItems.length == Object.values(req.files).length) {
         res.json({
             message: "Uploaded successfully",
-            fileInfo: fileInfo
+            fileInfo: uploadedItems
         });
+
+    } else {
+        res.status(406).json();
     }
 });
 
