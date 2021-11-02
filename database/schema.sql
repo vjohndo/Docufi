@@ -1,6 +1,8 @@
 -- CREATE DATABASE Docufi;
 DROP TABLE IF EXISTS Files;
 DROP TABLE IF EXISTS Users;
+DROP TABLE IF EXISTS Entities;
+DROP TABLE IF EXISTS Searchterms;
 
 CREATE TABLE Users (
     Id SERIAL,
@@ -30,6 +32,19 @@ CREATE TABLE Files (
     LastModifiedTime DATE,
     PRIMARY KEY (Id)
 );
+
+CREATE TABLE Entities (
+    Id SERIAL,
+    Entity Text,
+    UNIQUE (Entity)
+)
+
+CREATE TABLE Searchterms (
+    FilesID int,
+    EntitiesID int,
+    FOREIGN KEY (FilesID) REFERENCES Files(Id);
+    FOREIGN KEY (EntitiesID) REFERENCES Entities(Id);
+)
 
 -- password123
 INSERT INTO Users (Email, FirstName, LastName, Hash) VALUES ('test1@email.com', 'test', 'login1', '$2b$10$oqdKaka0vRfS6bKBL6qFSuS.MzajDpyRzMUgHS43MOqGsLqchx.5K');
