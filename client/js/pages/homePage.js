@@ -15,13 +15,16 @@ async function renderHomePage() {
         <aside class="col-sm-4">
             <div class="selected-zone">
                 <div class="accordion" id="fileUploadAccordion"></div> 
+                <div id="selected-zone-spinner" class="spinner-border text-secondary hidden" role="status">
+                    <span class="sr-only">Loading...</span>
+                </div>
             </div>
         </aside>
     </div>
     `;
 
     // Hook into existing p element for now to show logged in status. Will add to home page later.
-    let message = createElement('p',[],'Welcome to the Docufi');
+    let message = createElement('p',[],'Welcome to Docufi');
     const isLoggedIn = await axios.get("/api/sessions")
     message.textContent += (isLoggedIn.data.email) ? ` - Logged in with ${isLoggedIn.data.email}` : ` - Not Logged in`;
     page.appendChild(message);
@@ -72,17 +75,16 @@ function renderDropZoneElements() {
 function uploadFile(selectedFile) {
     const config = {
         onUploadProgress: e => {
-            const percentCompleted = Math.round( (e.loaded * 100) / e.total );
+            // progress to max at 75% - completion once analysis is done
+            const percentCompleted = Math.round( (e.loaded * 100) / e.total * .80);
             console.log(`Progress ${percentCompleted}`);
-            // TODO: Update GUI status progress
             let progressBar = page.querySelector('.progress-bar');
             progressBar.style.width = `${percentCompleted}%`;
             if (e.loaded === e.total) {
                 console.log('File upload completed');
+                createAlert('File upload completed', AlertType.SUCCESS);
                 setTimeout(function() {
-                    progressBar.classList.remove('progress-bar-animated');
-                    progressBar.classList.remove('progress-bar-striped');
-                    progressBar.classList.add('bg-success');
+
                 }, 700);
             }
         }
@@ -90,26 +92,52 @@ function uploadFile(selectedFile) {
     const dataForm = new FormData();
     dataForm.append('file', selectedFile);
 
-    // Show progress bar
+    uploadFileProgressStart();
+    addLoadingIcon();
+
+    axios.post('/api/file', dataForm, config).then(res => {
+        const { OriginalName, FileFormat, FileName } = res.data.fileInfo;
+        completeProgressBar();
+        removeLoadingIcon();
+        addItemToSelectedZone(OriginalName, FileFormat, FileName);
+    })
+    .catch(err => {
+        // TODO: progress bar error red
+        completeProgressBar();
+        removeLoadingIcon();
+        createAlert(err, AlertType.DANGER);
+    });
+}
+
+function uploadFileProgressStart() {
     let progressBar = page.querySelector('.progress-bar');
     let progressWrapper = page.querySelector('.progress');
     progressBar.style.width = '0%';
     progressWrapper.classList.remove('hide');
-
     progressBar.classList.add('progress-bar-animated');
     progressBar.classList.add('progress-bar-striped');
     progressBar.classList.remove('bg-success');
+}
 
-    axios.post('/api/file', dataForm, config).then(res => {
-        // TODO: Notify upload
-        const { OriginalName, FileFormat, FileName } = res.data.fileInfo;
-        console.log(res);
-        addItemToSelectedZone(OriginalName, FileFormat, FileName);
-    })
-    .catch(err => {
-        // TODO: Notify Error
-        console.log(err)
-    });
+function addLoadingIcon() {
+    // start selected zone loading spinner TODO: Tidy this up
+    document.querySelector('#selected-zone-spinner').classList.remove('hidden');
+    document.querySelector('.selected-zone').classList.add('loading');
+    document.querySelector('.accordion').classList.add('hidden');
+}
+
+function removeLoadingIcon() {
+    document.querySelector('.selected-zone').classList.remove('loading');
+    document.querySelector('.accordion').classList.remove('hidden');
+    document.querySelector('#selected-zone-spinner').classList.add('hidden');
+}
+
+function completeProgressBar() {
+    let progressBar = page.querySelector('.progress-bar');
+    progressBar.style.width = `100%`;
+    progressBar.classList.remove('progress-bar-animated');
+    progressBar.classList.remove('progress-bar-striped');
+    progressBar.classList.add('bg-success');
 }
 
 function addItemToSelectedZone(originalName, bodyText, fileName) {

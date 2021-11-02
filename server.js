@@ -45,7 +45,7 @@ app.use("/api/sessions", sessionsController);
 app.use("/api/signup", signupController);
 
 app.use((req, res, next) => {
-   if (!req.session.username) {
+   if (!req.session.email) {
        res.status(401).send();
    } else {
        next();
