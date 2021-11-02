@@ -6,7 +6,7 @@ async function renderHomePage() {
             <div class="drop-zone"> 
                 <span class="btn btn-primary">Browse</span> 
                 <span class="drop-message"> or drop file</span> 
-                <input class="file-input" type="file">
+                <input class="file-input" type="file" multiple>
             </div>  
             <div class="progress hide">
                 <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
@@ -39,16 +39,8 @@ function renderFileUploadElements() {
     // File dropped into drop zone
     fileInputElement.addEventListener('change',  x => {
         dropZone.classList.remove('on-drop');
-        const selectedFile = x.target.files[0];
-        console.log(selectedFile);
-
-        if (selectedFile.type !== 'application/pdf') {
-            // TODO: Alert - File type not permitted;
-            console.log('File Type Not Permitted');
-            return;
-        }
-
-        uploadFile(selectedFile);
+        const selectedFiles = x.target.files;
+        uploadFile(selectedFiles);
         renderDropZoneElements();
         renderFileUploadElements();
     });
@@ -83,23 +75,28 @@ function uploadFile(selectedFile) {
             if (e.loaded === e.total) {
                 console.log('File upload completed');
                 createAlert('File upload completed', AlertType.SUCCESS);
-                setTimeout(function() {
-
-                }, 700);
             }
         }
     }
     const dataForm = new FormData();
-    dataForm.append('file', selectedFile);
+    dataForm.append('name', 'files');
+
+    Object.values(selectedFile).forEach(file => {
+       dataForm.append('files', file)
+    });
+
 
     uploadFileProgressStart();
     addLoadingIcon();
 
     axios.post('/api/file', dataForm, config).then(res => {
-        const { OriginalName, FileFormat, FileName } = res.data.fileInfo;
-        completeProgressBar();
-        removeLoadingIcon();
-        addItemToSelectedZone(OriginalName, FileFormat, FileName);
+        res.data.fileInfo.forEach(f => {
+            const { OriginalName, FileFormat, FileName } = f;
+            completeProgressBar();
+            removeLoadingIcon();
+            addItemToSelectedZone(OriginalName, FileFormat, FileName);
+        });
+
     })
     .catch(err => {
         // TODO: progress bar error red
