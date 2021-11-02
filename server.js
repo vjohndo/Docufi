@@ -2,7 +2,7 @@
 const express = require("express");
 const textAnalysisController = require("./controllers/textAnalysis");
 const fileController = require("./controllers/FileController");
-const documentsController = require("./controllers/DocumentsController")
+const documentController = require("./controllers/DocumentController")
 
 // Load the .env and configure it. 
 const dotenv = require("dotenv");
@@ -40,10 +40,10 @@ app.use(
     })
 );
 
-app.use("/api/documents", documentsController);
+app.use("/api/documents", documentController);
 
 app.use("/api/sessions", sessionsController);
-// Sign up route
+
 app.use("/api/signup", signupController);
 
 app.use((req, res, next) => {
@@ -57,8 +57,6 @@ app.use((req, res, next) => {
 
 // router for API for text analysis
 app.use("/api/file", fileController);
-
-
 
 app.use(errorHandler);
 
