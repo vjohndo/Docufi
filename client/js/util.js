@@ -12,7 +12,10 @@ function createElement(type, classes, text, attributes) {
 }
 
 function getClearPage() {
+    const searchBox = document.getElementById("searchButton");
+    searchBox.removeEventListener("input", getSearchedDocuments);
     const page = document.querySelector('#page');
     page.innerHTML = "";
     return { "page": page };
+    
 }

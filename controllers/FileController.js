@@ -1,13 +1,14 @@
 const express = require("express");
 const Users = require("../models/users");
 const Files = require("../models/Files");
+const SearchTerms = require("../models/searchTerms");
+const Entity = require("../models/entity");
 const router = express.Router();
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 const pdf = require("pdf-extraction");
 const fs = require('fs');
 const azureAnalyzeText = require('../models/textAnalysis');
-const {raw} = require("express");
 
 router.use(express.json());
 
@@ -38,8 +39,20 @@ router.post("/", upload.array("files"), async (req, res) => {
 
         fileInfo["TextAnalysis"] = result;
 
+        const addedFile = await Files.addFile(fileInfo);
+
         // Write fileInfo to the db after getting the results
-        await Files.addFile(fileInfo);
+        for (entity of result.entityLinking.documents[0].entities) {
+            try {
+                let addedEntity = await Entity.insert(entity.name);
+                await SearchTerms.connect(addedFile[0].id, addedEntity.id);
+            } 
+            catch {
+                let addedEntity = await Entity.get(entity.name);
+                await SearchTerms.connect(addedFile[0].id, addedEntity.id);
+            }
+        }
+
         uploadedItems.push(fileInfo);
     }
 

@@ -22,6 +22,24 @@ const Files = {
             values: [email, fileId]
         };
         return await db.query(sql).then(dbRes => dbRes.rows[0]);
+    },
+    async getSearchedFiles(email, searchTerms) {
+        console.log("passed through the search");
+        console.log(searchTerms)
+        const sql = {
+            text: 'SELECT files.originalname, files.id, entities.entity FROM files INNER JOIN searchterms ON files.id = searchterms.filesid INNER JOIN entities ON entities.id = searchterms.entitiesid INNER JOIN users ON users.email = $1',
+            values: [email]
+        }
+
+        sql.text += ` WHERE UPPER(entities.entity) LIKE UPPER($2)`;
+        sql.values.push('%'+searchTerms[0]+'%')
+
+        for (let i = 1; i < searchTerms.length; i++) {
+            sql.text += ` AND UPPER(entities.entity) LIKE UPPER($${i+2})`;
+            sql.values.push('%'+searchTerms[i]+'%');
+        }
+
+        return await db.query(sql).then(dbRes => dbRes.rows);
     }
 }
 

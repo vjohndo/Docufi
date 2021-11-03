@@ -27,6 +27,58 @@ async function renderDocumentsPage() {
 
     let message = createElement('p',[],'This is the documents page');
     page.appendChild(message);
+
+    // Code for searching
+    const searchBox = document.getElementById("searchButton");
+    searchBox.addEventListener("input", getSearchedDocuments);
+}
+
+async function getSearchedDocuments(event) {
+
+    if (event.target.value.length > 3) {
+
+        let capturedValue = event.target.value
+        let searchTerms = event.target.value.split(" ");
+        let filteredSearchTerms = searchTerms.filter( (element) => element !== "" );
+        let getParams = Object.assign({}, filteredSearchTerms)
+
+        setTimeout( async () => {
+            const searchBox = document.getElementById("searchButton");
+            if (capturedValue === searchBox.value) {
+
+                const unorderedList = document.getElementById("documentList");
+
+                let results = await axios.get("/api/documents/search", {params: getParams});
+                unorderedList.innerHTML = "";
+                let docList = {};
+
+                if (results.data.length === 0) {
+                    let docElement = createElement("li", ["list-group-item"], "No items found");
+                    unorderedList.appendChild(docElement);
+
+                } else {
+                    for (object of results.data) {
+                        if (docList[object.id]) {
+                            docList[object.id].entity.push(object.entity)
+                        } else {
+                            docList[object.id] = {originalname: object.originalname, entity: [object.entity]} 
+                        }
+                    }
+
+                    for (const [documentId, documentObject] of Object.entries(docList)) {
+                        let docElement = createElement("li", ["list-group-item"], documentObject.originalname);
+                        docElement.dataset.id = documentId;
+
+                        let spanElement = createElement("span", [], documentObject.entity.join(", "));
+                        docElement.appendChild(spanElement);
+                        unorderedList.appendChild(docElement);
+
+                        docElement.addEventListener('click', onDocumentsSelected);
+                    }
+                }
+            }
+        }, 1000)
+    }
 }
 
 async function onDocumentsSelected(e) {
@@ -38,5 +90,5 @@ async function onDocumentsSelected(e) {
     const payload = await axios.get(`/api/documents/${e.target.dataset.id}`);
     
     console.log(payload.data);
-
 }
+

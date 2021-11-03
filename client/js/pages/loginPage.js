@@ -1,6 +1,6 @@
 function renderLogin() {
     // Get the page, create a form
-    const page = document.getElementById("page");
+    let { page } = getClearPage();
     page.replaceChildren("");
     // TO DO.. clean up the HTML
     page.innerHTML = `
