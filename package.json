@@ -28,8 +28,8 @@
     "express-session": "^1.17.2",
     "multer": "^1.4.3",
     "pdf-extraction": "^1.0.2",
-    "pg": "^8.7.1"
+    "pg": "^8.7.1",
+    "socket.io": "^4.3.1"
   },
-  "devDependencies": {},
   "keywords": []
 }

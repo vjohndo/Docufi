@@ -24,7 +24,8 @@ CREATE TABLE Files (
     UserId INT REFERENCES Users (Id),
     FileSize INTEGER,
     FileType TEXT,
-    TextAnalysis JSON, 
+    TextAnalysis JSON,
+    Processed BOOLEAN DEFAULT false,
     -- DateUploaded is ISO
     DateUploaded DATE,
     LastModifiedTime DATE,
