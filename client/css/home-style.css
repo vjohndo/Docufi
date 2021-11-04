@@ -60,3 +60,15 @@
 .on-drop {
     background-color: #8AC8FF;
 }
+
+.bg-success {
+    transition: all .2s ease-in;
+}
+
+.text-white {
+    transition: all .2s ease-in;
+}
+
+.accordion-button .fa-check {
+    margin-left: 5px;
+}
