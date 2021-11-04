@@ -9,6 +9,7 @@ const upload = multer({ dest: "uploads/" });
 const pdf = require("pdf-extraction");
 const fs = require('fs');
 const azureAnalyzeText = require('../models/textAnalysis');
+const { PiiEntityDomain } = require("@azure/ai-text-analytics");
 
 router.use(express.json());
 
