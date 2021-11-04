@@ -38,6 +38,8 @@ router.post("/", upload.array("files"), async (req, res) => {
         const result = await analyzeAndProcessDocuments(extractedData.text);
 
         fileInfo["TextAnalysis"] = result;
+        fileInfo["Sentiment"] = result.sentiment.documents[0].sentiment;
+        fileInfo["ConfidenceScores"] = result.sentiment.documents[0].confidenceScores;
 
         const addedFile = await Files.addFile(fileInfo);
 

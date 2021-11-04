@@ -4,8 +4,8 @@ const Files = {
     async addFile(file) {
         console.log(file);
         const sql = {
-            text: 'INSERT INTO files (originalname, filename, filepath, userid, filesize, filetype, dateuploaded, textanalysis) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
-            values: [file.OriginalName, file.FileName, file.FilePath, file.UserId, file.FileSize, file.FileFormat, file.DateUploaded, file.TextAnalysis]
+            text: 'INSERT INTO files (originalname, filename, filepath, userid, filesize, filetype, dateuploaded, textanalysis, sentiment, confidencescores) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *',
+            values: [file.OriginalName, file.FileName, file.FilePath, file.UserId, file.FileSize, file.FileFormat, file.DateUploaded, file.TextAnalysis, file.Sentiment, file.ConfidenceScores]
         };
         return await db.query(sql).then(dbRes => dbRes.rows);
     },
@@ -27,7 +27,7 @@ const Files = {
         console.log("passed through the search");
         console.log(searchTerms)
         const sql = {
-            text: 'SELECT files.originalname, files.id, entities.entity FROM files INNER JOIN searchterms ON files.id = searchterms.filesid INNER JOIN entities ON entities.id = searchterms.entitiesid INNER JOIN users ON users.email = $1',
+            text: 'SELECT files.originalname, files.id, files.sentiment, files.confidencescores, entities.entity FROM files INNER JOIN searchterms ON files.id = searchterms.filesid INNER JOIN entities ON entities.id = searchterms.entitiesid INNER JOIN users ON users.email = $1',
             values: [email]
         }
 

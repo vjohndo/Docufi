@@ -38,18 +38,18 @@ async function getSearchedDocuments(event) {
     if (event.target.value.length > 3) {
 
         let capturedValue = event.target.value
-        let searchTerms = event.target.value.split(" ");
-        let filteredSearchTerms = searchTerms.filter( (element) => element !== "" );
-        let getParams = Object.assign({}, filteredSearchTerms)
-
+        
         setTimeout( async () => {
             const searchBox = document.getElementById("searchButton");
             if (capturedValue === searchBox.value) {
-
                 const unorderedList = document.getElementById("documentList");
-
-                let results = await axios.get("/api/documents/search", {params: getParams});
                 unorderedList.innerHTML = "";
+
+                let searchTerms = document.getElementById("searchButton").value.split(" ");
+                let filteredSearchTerms = searchTerms.filter( (element) => element !== "" );
+                let getParams = Object.assign({}, filteredSearchTerms)
+                let results = await axios.get("/api/documents/search", {params: getParams});
+                
                 let docList = {};
 
                 if (results.data.length === 0) {
@@ -61,20 +61,23 @@ async function getSearchedDocuments(event) {
                         if (docList[object.id]) {
                             docList[object.id].entity.push(object.entity)
                         } else {
-                            docList[object.id] = {originalname: object.originalname, entity: [object.entity]} 
+                            docList[object.id] = {originalname: object.originalname, entity: [object.entity], sentiment: object.sentiment, confidenceScores: object.confidencescores} 
                         }
                     }
 
                     for (const [documentId, documentObject] of Object.entries(docList)) {
                         let docElement = createElement("li", ["list-group-item"], documentObject.originalname);
+                        
                         docElement.dataset.id = documentId;
 
                         let spanElement = createElement("span", [], documentObject.entity.join(", "));
                         docElement.appendChild(spanElement);
                         unorderedList.appendChild(docElement);
 
-                        docElement.addEventListener('click', onDocumentsSelected);
+                        docElement.addEventListener('click', await onDocumentsSelected);
                     }
+
+                    console.log(docList);
                 }
             }
         }, 1000)
@@ -82,13 +85,18 @@ async function getSearchedDocuments(event) {
 }
 
 async function onDocumentsSelected(e) {
+
+    const documentLi = e.target;
+
     // remove active class from all headers
-    document.getElementById("documentList").querySelectorAll('li')?.forEach(x => x.classList.remove('active'));
+    document.getElementById("documentList").querySelectorAll('li').forEach(x => x.classList.remove('active'));
+
     // add active class to selected header
     e.target.classList.add('active');
     
-    const payload = await axios.get(`/api/documents/${e.target.dataset.id}`);
-    
-    console.log(payload.data);
+    if (e.target.dataset.id) {
+        const payload = await axios.get(`/api/documents/${e.target.dataset.id}`);
+        console.log(payload.data);
+    }
 }
 
