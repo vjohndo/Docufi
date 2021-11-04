@@ -11,6 +11,11 @@ a {
   color: #00B7FF;
 }
 
+span {
+    display: block;
+    font-size: x-small;
+}
+
 .nav-item {
   cursor: pointer;
 }

@@ -1,14 +1,14 @@
 const express = require("express");
 const Users = require("../models/users");
 const Files = require("../models/Files");
+const SearchTerms = require("../models/searchTerms");
+const Entity = require("../models/entity");
 const router = express.Router();
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 const pdf = require("pdf-extraction");
 const fs = require('fs');
 const azureAnalyzeText = require('../models/textAnalysis');
-const {raw} = require("express");
-
 
 router.use(express.json());
 
@@ -52,9 +52,24 @@ router.post("/", upload.array("files"), async (req, res) => {
         uploadedItems.push(fileInfo);
 
         // Call API / Analyse Text
-        analyzeAndProcessDocuments(extractedData.text).then(res => {
+        analyzeAndProcessDocuments(extractedData.text).then(async res => {
             fileInfo.TextAnalysis = res;
+            fileInfo.Sentiment = res.sentiment.documents[0].sentiment;
+            fileInfo.ConfidenceScores = res.sentiment.documents[0].confidenceScores;
             fileInfo.Processed = true;
+
+            console.log(dbResult);
+
+            for (entity of res.entityLinking.documents[0].entities) {
+                try {
+                    let addedEntity = await Entity.insert(entity.name);
+                    await SearchTerms.connect(dbResult[0].id, addedEntity.id);
+                } 
+                catch {
+                    let existingEntity = await Entity.get(entity.name);
+                    await SearchTerms.connect(dbResult[0].id, existingEntity.id);
+                }
+            }
 
             // Flag file in db as completed
             Files.updateFileById(fileInfo, dbResult[0].id).then(async res => {
@@ -68,9 +83,6 @@ router.post("/", upload.array("files"), async (req, res) => {
                 }
             });
         })
-
-
-
     }
 
     // verify # uploaded files were processed
@@ -95,6 +107,19 @@ async function analyzeAndProcessDocuments(text) {
 
     // Output the raw result into the database
     return rawResult;
+}
+
+async function updateSearchTerms(entities) {
+    for (entity of entities) {
+        try {
+            let addedEntity = await Entity.insert(entity.name);
+            await SearchTerms.connect(addedFile[0].id, addedEntity.id);
+        } 
+        catch {
+            let existingEntity = await Entity.get(entity.name);
+            await SearchTerms.connect(addedFile[0].id, existingEntity.id);
+        }
+    }
 }
 
 module.exports = router;
