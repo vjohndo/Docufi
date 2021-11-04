@@ -3,7 +3,6 @@ const db = require('../database/db');
 
 const Files = {
     async addFile(file) {
-        console.log(file);
         const sql = {
             text: 'INSERT INTO files (originalname, filename, filepath, userid, filesize, filetype, dateuploaded, textanalysis) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
             values: [file.OriginalName, file.FileName, file.FilePath, file.UserId, file.FileSize, file.FileFormat, file.DateUploaded, file.TextAnalysis]
@@ -25,7 +24,6 @@ const Files = {
         return await db.query(sql).then(dbRes => dbRes.rows[0]);
     },
     async updateFileById(file, id) {
-        console.log(file);
         // TODO: last modified time
         const sql = {
             text: `UPDATE files SET documentname = $1,
@@ -43,8 +41,15 @@ const Files = {
         };
         return await db.query(sql).then(dbRes => dbRes.rows);
     },
-
-
+    async getFilesInProcess(userId) {
+        const sql = {
+            text: `SELECT id, userid, originalname, filename, filepath, processed, dateuploaded
+                    FROM files
+                    WHERE processed = false and userid = $1;`,
+            values: [userId]
+        };
+        return await db.query(sql).then(dbRes => dbRes.rows);
+    }
 }
 
 module.exports = Files;
