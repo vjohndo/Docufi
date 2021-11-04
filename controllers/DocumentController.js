@@ -1,8 +1,5 @@
 const express = require("express");
-const Users = require("../models/users");
 const Files = require("../models/Files");
-const { compareSync } = require("bcrypt");
-const { query } = require("express");
 const router = express.Router();
 router.use(express.json());
 

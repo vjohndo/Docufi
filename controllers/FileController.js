@@ -9,12 +9,21 @@ const upload = multer({ dest: "uploads/" });
 const pdf = require("pdf-extraction");
 const fs = require('fs');
 const azureAnalyzeText = require('../models/textAnalysis');
-const { PiiEntityDomain } = require("@azure/ai-text-analytics");
 
 router.use(express.json());
 
-router.get("/:id", (req, res) => {
+router.get("/", (req, res) => {
     res.json({message: "File Controller"});
+})
+
+// Get pending files
+router.get("/processing",  (req, res) => {
+    Files.getFilesInProcess(3).then(result => {
+        res.json(result);
+    })
+    .catch(err => {
+        res.json({message: err});
+    })
 })
 
 // Endpoint for text analysis. Sample JSON request body = {documents = ["sentence 1", "sentence 2"]}
@@ -22,6 +31,7 @@ router.post("/", upload.array("files"), async (req, res) => {
     const user = await Users.getUserByEmail(req.session.email)
     const uploadedItems = [];
 
+    // Iterate over each file
     for (let file of req.files) {
         const { originalname, filename, path, size, mimetype } = file;
         const fileInfo = {
@@ -36,27 +46,43 @@ router.post("/", upload.array("files"), async (req, res) => {
 
         let dataBuf = fs.readFileSync(file.path);
         const extractedData = await pdf(dataBuf);
-        const result = await analyzeAndProcessDocuments(extractedData.text);
 
-        fileInfo["TextAnalysis"] = result;
-        fileInfo["Sentiment"] = result.sentiment.documents[0].sentiment;
-        fileInfo["ConfidenceScores"] = result.sentiment.documents[0].confidenceScores;
-
-        const addedFile = await Files.addFile(fileInfo);
-
-        // Write fileInfo to the db after getting the results
-        for (entity of result.entityLinking.documents[0].entities) {
-            try {
-                let addedEntity = await Entity.insert(entity.name);
-                await SearchTerms.connect(addedFile[0].id, addedEntity.id);
-            } 
-            catch {
-                let addedEntity = await Entity.get(entity.name);
-                await SearchTerms.connect(addedFile[0].id, addedEntity.id);
-            }
-        }
-
+        // Write fileInfo to the db after getting file information
+        const dbResult = await Files.addFile(fileInfo);
         uploadedItems.push(fileInfo);
+
+        // Call API / Analyse Text
+        analyzeAndProcessDocuments(extractedData.text).then(async res => {
+            fileInfo.TextAnalysis = res;
+            fileInfo.Sentiment = res.sentiment.documents[0].sentiment;
+            fileInfo.ConfidenceScores = res.sentiment.documents[0].confidenceScores;
+            fileInfo.Processed = true;
+
+            console.log(dbResult);
+
+            for (entity of res.entityLinking.documents[0].entities) {
+                try {
+                    let addedEntity = await Entity.insert(entity.name);
+                    await SearchTerms.connect(dbResult[0].id, addedEntity.id);
+                } 
+                catch {
+                    let existingEntity = await Entity.get(entity.name);
+                    await SearchTerms.connect(dbResult[0].id, existingEntity.id);
+                }
+            }
+
+            // Flag file in db as completed
+            Files.updateFileById(fileInfo, dbResult[0].id).then(async res => {
+                req.io.emit('fileAnalysisComplete', {"file": fileInfo});
+
+                // check for additional files processing
+                const processChecker = await Files.getFilesInProcess(user.id);
+                if (processChecker < 1) {
+                    // Notify client all uploads have processed
+                    req.io.emit('allFilesAnalysed');
+                }
+            });
+        })
     }
 
     // verify # uploaded files were processed
@@ -71,64 +97,29 @@ router.post("/", upload.array("files"), async (req, res) => {
     }
 });
 
-// Need to look into this function!!!
 async function analyzeAndProcessDocuments(text) {
-    console.log("File recieved");
     // split extracted text to conform to AzureCS requirements
     text = text.replace(/(\s+)/gm, " ");
     const textArr = text.match(/.{1,5000}/g);
 
     // Call AAT Service
-    console.log("Analysing Text");
     const rawResult = await azureAnalyzeText(textArr);
 
-    console.log("Returning Results Text");
     // Output the raw result into the database
     return rawResult;
 }
 
-function dataSanatizing() {
-                // Get and remove erroneous datasets
-        const errors = [];
-        for (const item in rawResult) {
-            const collectionObject = rawResult[item];
-            collectionObject.documents.forEach(obj => {
-            if (obj.error) {
-                errors.push(obj.error);
-                rawResult[item].error = true;
-                console.log(`Error in analysis: ${JSON.stringify(obj.error)}`)
-            }
-            });
+async function updateSearchTerms(entities) {
+    for (entity of entities) {
+        try {
+            let addedEntity = await Entity.insert(entity.name);
+            await SearchTerms.connect(addedFile[0].id, addedEntity.id);
+        } 
+        catch {
+            let existingEntity = await Entity.get(entity.name);
+            await SearchTerms.connect(addedFile[0].id, existingEntity.id);
         }
-
-        // only take data with no errors 
-        const sanitizedData = Object.entries(rawResult).filter(x => !x[1].error).map(x => {
-            return { [x[0]] : [x[1]]  }
-        })
-        console.log('SANATIZED DATA:', sanitizedData);
-        console.log('SANATIZED DATA:', sanitizedData[0]);
-        console.log('SANATIZED DATA:', sanitizedData[0].sentiment);
-    
-        // Return if no data found
-        if (sanitizedData.length < 1) {
-            return {
-                'success': false,
-                'message': errors
-            }
-        }
-    
-        if (!sanitizedData) {
-            console.log('No documents');
-            return {
-                'success': false,
-                'message': 'No documents found in file'
-            }
-        }
-    
-        return {
-            'success': true,
-            'message': 'Documents analyzed successfully'
-        }
+    }
 }
 
 module.exports = router;

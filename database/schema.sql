@@ -30,6 +30,7 @@ CREATE TABLE Files (
     TextAnalysis JSON,
     Sentiment TEXT, 
     ConfidenceScores JSON,
+    Processed BOOLEAN DEFAULT false,
     -- DateUploaded is ISO
     DateUploaded DATE,
     LastModifiedTime DATE,

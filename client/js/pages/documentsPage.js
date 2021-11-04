@@ -1,20 +1,50 @@
 async function renderDocumentsPage() {
 
-    const uploadedDocuments = await axios.get("/api/documents");
-
     // Query the database to pull out the documents
-    let { page } = getClearPage();
+    const uploadedDocuments = await axios.get("/api/documents");
+    
+    let { page, pageId } = getClearPage('documents');
     page.innerHTML = `
-    <div class="container-md">
+        <!-- Placeholder for the documents list -->
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-12">
                 <ul id="documentList" class="list-group">
                 </ul>
             </div>
         </div>
-    </div>
-    `
-
+        <div class="row">
+            <aside class="col-sm-5">
+                <div id="document-raw-text-wrapper">
+                    
+                </div>
+            </aside>
+            <main class="col-sm-7">
+                <div id="document-analysis-wrapper" class="card">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs" data-bs-tabs="tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" aria-current="true" data-bs-toggle="tab" href="#analysed-text">Analysed Text</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-bs-toggle="tab" href="#json">JSON</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <form class="card-body tab-content">
+                        <div class="tab-pane active" id="analysed-text">
+                            Analysed Text goes here
+                        </div>
+                        <div class="tab-pane" id="json">
+                            JSON goes here
+                        </div>
+  
+                    </form>
+                </div>
+            </main>
+        </div>
+    `;
+    
+    // For loop below creates list items and appends them to document list
     for (documentObject of uploadedDocuments.data) {
         
         let docElement = createElement("li", ["list-group-item"], documentObject.originalname);
@@ -28,75 +58,95 @@ async function renderDocumentsPage() {
     let message = createElement('p',[],'This is the documents page');
     page.appendChild(message);
 
-    // Code for searching
+    // Adding event listener to search bar... automatically updates so can disable searching
     const searchBox = document.getElementById("searchButton");
     searchBox.addEventListener("input", getSearchedDocuments);
 }
 
+
 async function getSearchedDocuments(event) {
+    // Only run code if the current rendering of the page does not contain a documentList
+    if (document.getElementById("documentList")) {
 
-    if (event.target.value.length > 3) {
+        //  Only run code if search word is greater in length than three
+        if (event.target.value.length > 3) {
 
-        let capturedValue = event.target.value
-        
-        setTimeout( async () => {
-            const searchBox = document.getElementById("searchButton");
-            if (capturedValue === searchBox.value) {
-                const unorderedList = document.getElementById("documentList");
-                unorderedList.innerHTML = "";
+            let capturedValue = event.target.value
+            
+            // Want to only start the search after 1 sec of inactivity
+            setTimeout( async () => {
+                const searchBox = document.getElementById("searchButton");
+                if (capturedValue === searchBox.value) {
+    
+                    // Grab the document list and set it to empty
+                    const unorderedList = document.getElementById("documentList");
+                    unorderedList.innerHTML = "";
+    
+                    // Get the search terms, split on spaces into an array, set them as query string parameters for a get call
+                    let searchTerms = document.getElementById("searchButton").value.split(" ");
+                    let filteredSearchTerms = searchTerms.filter( (element) => element !== "" );
+                    let getParams = Object.assign({}, filteredSearchTerms)
+                    let results = await axios.get("/api/documents/search", {params: getParams});
+                    
+                    let filesMatchingEntitiesArr = results.data;
 
-                let searchTerms = document.getElementById("searchButton").value.split(" ");
-                let filteredSearchTerms = searchTerms.filter( (element) => element !== "" );
-                let getParams = Object.assign({}, filteredSearchTerms)
-                let results = await axios.get("/api/documents/search", {params: getParams});
-                
-                let docList = {};
-
-                if (results.data.length === 0) {
-                    let docElement = createElement("li", ["list-group-item"], "No items found");
-                    unorderedList.appendChild(docElement);
-
-                } else {
-                    for (object of results.data) {
-                        if (docList[object.id]) {
-                            docList[object.id].entity.push(object.entity)
-                        } else {
-                            docList[object.id] = {originalname: object.originalname, entity: [object.entity], sentiment: object.sentiment, confidenceScores: object.confidencescores} 
-                        }
-                    }
-
-                    for (const [documentId, documentObject] of Object.entries(docList)) {
-                        let docElement = createElement("li", ["list-group-item"], documentObject.originalname);
-                        
-                        docElement.dataset.id = documentId;
-
-                        let spanElement = createElement("span", [], documentObject.entity.join(", "));
-                        docElement.appendChild(spanElement);
+                    // Initialise a doc list
+                    let docList = {};
+                    
+                    // If no matching entities in DB, create a No items found list item
+                    if (filesMatchingEntitiesArr.length === 0) {
+                        let docElement = createElement("li", ["list-group-item"], "No items found");
                         unorderedList.appendChild(docElement);
+    
+                    } else {
+                        // For each result, add this to the docList object and keep adding matched entities to the corresponding file id
+                        for (object of filesMatchingEntitiesArr) {
+                            if (docList[object.id]) {
+                                docList[object.id].entity.push(object.entity)
+                            } else {
+                                docList[object.id] = {originalname: object.originalname, entity: [object.entity], sentiment: object.sentiment, confidenceScores: object.confidencescores} 
+                            }
+                        }
 
-                        docElement.addEventListener('click', await onDocumentsSelected);
+                        // For loop below creates list items and appends them to document list
+                        for (const [documentId, documentObject] of Object.entries(docList)) {
+                            let docElement = createElement("li", ["list-group-item"], documentObject.originalname);
+                            docElement.addEventListener('click', onDocumentsSelected);
+                            docElement.dataset.id = documentId;
+    
+                            let entitiesSpan = createElement("span", [], documentObject.entity.join(", "));
+                            let sentimentSpan = createElement("span", [], "sentiment: " + documentObject.sentiment);
+                            let confidenceSpan = createElement("span", [], JSON.stringify(documentObject.confidenceScores));
+                            
+                            [entitiesSpan, sentimentSpan, confidenceSpan].forEach( (x) => docElement.append(x));
+
+                            unorderedList.append(docElement);
+                        }
+    
+                        console.log(docList);
                     }
-
-                    console.log(docList);
                 }
-            }
-        }, 1000)
+            }, 1000)
+        } 
     }
 }
 
 async function onDocumentsSelected(e) {
 
-    const documentLi = e.target;
-
     // remove active class from all headers
     document.getElementById("documentList").querySelectorAll('li').forEach(x => x.classList.remove('active'));
 
-    // add active class to selected header
-    e.target.classList.add('active');
+    // Sometimes clicking on a "span" child triggers this event but the "span" remains as the e.target
+    let listItem = e.target;
+    if (e.target.nodeName !== "LI") {
+        listItem = e.target.parentNode;
+    }
+
+    listItem.classList.add('active');
     
+    // Sometimes clicking on a "span" child triggers this event but the "span" remains as the e.target
     if (e.target.dataset.id) {
         const payload = await axios.get(`/api/documents/${e.target.dataset.id}`);
         console.log(payload.data);
     }
 }
-

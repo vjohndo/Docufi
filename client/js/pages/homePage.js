@@ -1,5 +1,5 @@
 async function renderHomePage() {
-    let { page } = getClearPage();
+    let { page, pageId } = getClearPage('home');
     page.innerHTML = `
     <div class="row">
         <main class="col-sm-8">
@@ -15,9 +15,7 @@ async function renderHomePage() {
         <aside class="col-sm-4">
             <div class="selected-zone">
                 <div class="accordion" id="fileUploadAccordion"></div> 
-                <div id="selected-zone-spinner" class="spinner-border text-secondary hidden" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
+                <div id="selected-zone-spinner" class="spinner-border text-secondary hidden" role="status"></div>
             </div>
         </aside>
     </div>
@@ -151,8 +149,10 @@ function addItemToSelectedZone(originalName, bodyText, fileName) {
         {'data-bs-parent':"#fileUploadAccordion"},
         {'Id': 'a' + fileName}
     ]);
+    const spinner = createElement('div', ['spinner-border', 'text-secondary'], "", [{ role: 'status' }, {Id: 'a' + fileName}]);
     const body = createElement('div',['accordion-body'], bodyText);
     bodyWrapper.appendChild(body);
+    btn.appendChild(spinner);
     accHeader.appendChild(btn);
     accItem.appendChild(accHeader);
     accItem.appendChild(bodyWrapper);
