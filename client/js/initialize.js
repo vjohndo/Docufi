@@ -22,9 +22,7 @@ socket.on("fileAnalysisComplete", (payload) => {
     const pageId = getPageId();
     switch(pageId) {
         case 'home':
-            // On home page so complete / hide loading spinner for this element
-            const spinnerElement = document.getElementById('a' + payload.file.FileName);
-            spinnerElement.classList.add('hidden');
+            // TODO: Do something when each file is uploaded..
             break;
         case 'documents':
             break;
@@ -39,6 +37,17 @@ socket.on("allFilesAnalysed", () => {
     switch(pageId) {
         case 'home':
             createAlert('All files are analysed', AlertType.SUCCESS);
+            // Remove spinner
+            document.querySelector('#accordion-spinner').classList.add('hidden');
+
+            // update accordion text
+            const accordionButton = document.querySelector('.accordion-button');
+            accordionButton.textContent = 'All files analysed';
+            accordionButton.classList.add('text-white');
+            accordionButton.classList.add('bg-success');
+            const checkIcon = createElement('i', ['fas', 'fa-check'],"");
+            accordionButton.append(checkIcon);
+
             break;
         case 'documents':
             break;

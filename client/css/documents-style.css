@@ -7,4 +7,9 @@
 .spinner-border {
     position: absolute;
     right: 6em;
+    z-index: 1;
+}
+
+.text-success {
+    font-weight: bold;
 }
