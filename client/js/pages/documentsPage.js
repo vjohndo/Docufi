@@ -114,9 +114,9 @@ async function getSearchedDocuments(event) {
                             docElement.addEventListener('click', onDocumentsSelected);
                             docElement.dataset.id = documentId;
     
-                            let entitiesSpan = createElement("span", [], documentObject.entity.join(", "));
+                            let entitiesSpan = createElement("span", [], "matching entities: " + documentObject.entity.join(", "));
                             let sentimentSpan = createElement("span", [], "sentiment: " + documentObject.sentiment);
-                            let confidenceSpan = createElement("span", [], JSON.stringify(documentObject.confidenceScores));
+                            let confidenceSpan = createElement("span", [], "confidence scores: " + JSON.stringify(documentObject.confidenceScores));
                             
                             [entitiesSpan, sentimentSpan, confidenceSpan].forEach( (x) => docElement.append(x));
 
