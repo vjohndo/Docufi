@@ -3,7 +3,7 @@ async function renderDocumentsPage() {
     const uploadedDocuments = await axios.get("/api/documents");
 
     // Query the database to pull out the documents
-    let { page } = getClearPage();
+    let { page, pageId } = getClearPage('documents');
     page.innerHTML = `
         <div class="row">
             <aside class="col-sm-5">
