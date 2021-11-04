@@ -11,7 +11,7 @@ const Files = {
     },
     async getFileNamesByEmail(email) {
         const sql = {
-            text: 'SELECT files.originalname, files.id FROM (files INNER JOIN users ON files.userid = users.id) WHERE users.email = $1',
+            text: 'SELECT files.originalname, files.id, files.sentiment, files.confidencescores FROM (files INNER JOIN users ON files.userid = users.id) WHERE users.email = $1',
             values: [email]
         };
         return await db.query(sql).then(dbRes => dbRes.rows);

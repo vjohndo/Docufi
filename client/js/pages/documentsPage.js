@@ -144,9 +144,6 @@ async function onDocumentsSelected(e) {
 
     listItem.classList.add('active');
     
-    // Sometimes clicking on a "span" child triggers this event but the "span" remains as the e.target
-    if (e.target.dataset.id) {
-        const payload = await axios.get(`/api/documents/${e.target.dataset.id}`);
-        console.log(payload.data);
-    }
+    const payload = await axios.get(`/api/documents/${listItem.dataset.id}`);
+    console.log(payload.data);
 }
