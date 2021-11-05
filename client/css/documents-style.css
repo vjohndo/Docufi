@@ -51,3 +51,7 @@
 .doc-list-hover:hover {
     cursor: pointer;
 }
+
+.hidden {
+    display: none;
+}
