@@ -6,71 +6,75 @@ async function renderDocumentsPage() {
     let { page, pageId } = getClearPage('documents');
     page.innerHTML = `
         <!-- Placeholder for the documents list -->
-        <div class="row">
-            <div class="col-md-7 search-div">
-                <div id="search-wrapper" class="list-group">
-                    <form class="d-flex">
-                        <input id="searchButton" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
-                    </form>
-                    <div class="filter-wrapper">
-                        <div class="sentiment-elements">
-                            <p>Sentiment Filters</p>
-                            <div class="form-check form-switch">
-                              <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-                              <label class="form-check-label" for="flexSwitchCheckDefault">Positive</label>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7 search-div">
+                    <div id="search-wrapper" class="list-group">
+                        <form class="d-flex">
+                            <input id="searchButton" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-success" type="submit">Search</button>
+                        </form>
+                        <div class="filter-wrapper">
+                            <div class="sentiment-elements">
+                                <p>Sentiment Filters</p>
+                                <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Positive</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
+                                <label class="form-check-label" for="flexSwitchCheckChecked">Negative</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
+                                <label class="form-check-label" for="flexSwitchCheckChecked">Neutral</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
+                                <label class="form-check-label" for="flexSwitchCheckChecked">Mixed</label>
+                                </div>
                             </div>
-                            <div class="form-check form-switch">
-                              <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
-                              <label class="form-check-label" for="flexSwitchCheckChecked">Negative</label>
-                            </div>
-                            <div class="form-check form-switch">
-                              <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
-                              <label class="form-check-label" for="flexSwitchCheckChecked">Neutral</label>
-                            </div>
-                            <div class="form-check form-switch">
-                              <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
-                              <label class="form-check-label" for="flexSwitchCheckChecked">Mixed</label>
-                            </div>
+                        
                         </div>
-                       
                     </div>
                 </div>
-            </div>
-            <div class="col-md-5 document-wrapper">
-                <ul id="documentList" class="list-group">
-                </ul>
+                <div class="col-md-5 document-wrapper">
+                    <ul id="documentList" class="list-group">
+                    </ul>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <aside class="col-sm-5">
-                <div id="document-raw-text-wrapper" class="overflow-auto">
-                    
-                </div>
-            </aside>
-            <main class="col-sm-7">
-                <div id="document-analysis-wrapper" class="card">
-                    <div class="card-header">
-                        <ul class="nav nav-tabs card-header-tabs" data-bs-tabs="tabs">
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="true" data-bs-toggle="tab" href="#analysed-text">Analysed Text</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#json">JSON</a>
-                            </li>
-                        </ul>
+        <div class="container">
+            <div class="row" style="height: 50vh;">
+                <aside class="col-sm-5 h-100">
+                    <div id="document-raw-text-wrapper" class="overflow-auto h-100">
+                        
                     </div>
-                    <form class="overflow-auto card-body tab-content">
-                        <div class="tab-pane active" id="analysed-text">
-                            Analysed Text goes here
+                </aside>
+                <main class="col-sm-7 h-100">
+                    <div id="document-analysis-wrapper" class="card h-100">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs" data-bs-tabs="tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="true" data-bs-toggle="tab" href="#analysed-text">Analysed Text</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#json">JSON</a>
+                                </li>
+                            </ul>
                         </div>
-                        <div class="tab-pane json" id="json" >
-                            <pre id="jsonContent" > JSON goes here </pre>
-                        </div>
-  
-                    </form>
-                </div>
-            </main>
+                        <form class="overflow-auto card-body tab-content">
+                            <div class="tab-pane active" id="analysed-text">
+                                Analysed Text goes here
+                            </div>
+                            <div class="tab-pane json" id="json" >
+                                <pre id="jsonContent" > JSON goes here </pre>
+                            </div>
+    
+                        </form>
+                    </div>
+                </main>
+            </div>
         </div>
     `;
 

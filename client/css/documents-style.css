@@ -39,3 +39,11 @@
     border-right: 1px solid lightgray;
     padding-right: 15px;
 }
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.entity-bold {
+    font-weight: bold !important;
+}

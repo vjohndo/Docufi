@@ -30,7 +30,7 @@ function generateTextAnalysisUI(jsonPayload) {
 
     let newHeaderTopic = createElement("th", [], "Language:");
     newTableRow.appendChild(newHeaderTopic)
-    let newHeaderData = createElement("td", [], `${languageObject.name} (confidence: ${languageObject.confidenceScore*100} %)`);
+    let newHeaderData = createElement("td", [], `${languageObject.name} (confidence: ${Math.round(languageObject.confidenceScore*100)} %)`);
     newTableRow.appendChild(newHeaderData)
 
     // Key Phrases Row
@@ -58,7 +58,7 @@ function generateTextAnalysisUI(jsonPayload) {
 
     const sentimentSentence = jsonPayload.textanalysis.sentiment.documents[0].sentences
     for (const [index, entityObj] of sentimentSentence.entries()) {
-        newHeaderData.innerHTML += `Sentence ${index + 1}:  ${entityObj.sentiment.toUpperCase()}<br>  [Positive: ${entityObj.confidenceScores.positive * 100} % , Neutral: ${entityObj.confidenceScores.neutral * 100} % , Negative: ${entityObj.confidenceScores.negative * 100} % <br><br>`
+        newHeaderData.innerHTML += `Sentence ${index + 1}:  ${entityObj.sentiment.toUpperCase()}<br>  [Positive: ${Math.round(entityObj.confidenceScores.positive * 100)} %, Neutral: ${Math.round(entityObj.confidenceScores.neutral * 100)} %, Negative: ${Math.round(entityObj.confidenceScores.negative * 100)} % <br><br>`
     }
 
     newTableRow.appendChild(newHeaderData);
@@ -92,8 +92,8 @@ function generateTextAnalysisUI(jsonPayload) {
     const piiEntitiesArray = jsonPayload.textanalysis.entityPII.documents[0].entities;
 
     piiEntitiesArray.forEach( (entityObj) => {
-        newHeaderData.innerHTML += `Type: ${entityObj.category} <br>`
-        newHeaderData.innerHTML += `Value: ${entityObj.text} <br><br>`
+        newHeaderData.innerHTML += `<span style="font-weight: bold;">Type:</span> ${entityObj.category} <br>`
+        newHeaderData.innerHTML += `<span style="font-weight: bold;">Value:</span> ${entityObj.text} <br><br>`
     })
     newTableRow.appendChild(newHeaderData);
 
@@ -111,7 +111,7 @@ function generateTextAnalysisUI(jsonPayload) {
     const linkedEntities = jsonPayload.textanalysis.entityLinking.documents[0].entities;
 
     linkedEntities.forEach( (entityObj) => {
-        rawTextForLinking = rawTextForLinking.replaceAll(entityObj.name, `<a href="${entityObj.url}">${entityObj.name}</a>`)
+        rawTextForLinking = rawTextForLinking.replaceAll(entityObj.name, `<a class="no-padding" href="${entityObj.url}">${entityObj.name}</a>`)
     })
 
     newHeaderData.innerHTML = rawTextForLinking;
