@@ -39,3 +39,13 @@ span {
   justify-content: center;
   align-items: center;
 }
+
+/* spacing for alerts */
+.close {
+    text-align: center;
+}
+
+.bootstrap-growl {
+    right: 60px;
+    text-align: center;
+}
