@@ -39,3 +39,8 @@
     border-right: 1px solid lightgray;
     padding-right: 15px;
 }
+
+.confidence-elements {
+    border-right: 1px solid lightgray;
+    padding: 0 15px 0 15px;
+}

@@ -33,6 +33,11 @@ async function renderDocumentsPage() {
                               <label class="form-check-label" for="flexSwitchCheckChecked">Mixed</label>
                             </div>
                         </div>
+                        <div class="confidence-elements">
+                            <label for="confidence-range" class="form-label">Confidence Filter</label>
+                            <input type="range" class="form-range" id="confidence-range">
+                            <h6 id="confidence-value"></h6>
+                        </div>
                        
                     </div>
                 </div>
@@ -91,6 +96,16 @@ async function renderDocumentsPage() {
     // Adding event listener to search bar... automatically updates so can disable searching
     const searchBox = document.getElementById("searchButton");
     searchBox.addEventListener("input", getSearchedDocuments);
+
+    const confidenceSlider = document.getElementById('confidence-range');
+    confidenceSlider.addEventListener('change', e => {
+        document.getElementById('confidence-value').textContent = `${e.target.value}%`;
+        // get the value with:
+        let actualValue = e.target.value / 100;
+        // console.log(`Confidence value ${actualValue}`);
+    })
+
+
 }
 
 
