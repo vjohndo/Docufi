@@ -1,4 +1,5 @@
-// TODO: Get user login status and render Auth / Unauth components
+window.SOCKET = {};
+SOCKET.socketId = "";
 const socket = io("http://localhost:3000");
 
 axios.get('/api/sessions').then(response => {
@@ -12,7 +13,8 @@ axios.get('/api/sessions').then(response => {
 
 // log socket connection id
 socket.on("connect", () => {
-    console.log(`Socket Connected (id): ${socket.id}`);
+    SOCKET.socketId = socket.id;
+    console.log(`Socket Connected (id): ${SOCKET.socketId}`);
 });
 
 socket.on("fileAnalysisComplete", (payload) => {
@@ -38,7 +40,7 @@ socket.on("allFilesAnalysed", () => {
         case 'home':
             createAlert('All files are analysed', AlertType.SUCCESS);
             // Remove spinner
-            document.querySelector('#accordion-spinner').classList.add('hidden');
+            document.querySelector('#accordion-spinner')?.classList.add('hidden');
 
             // update accordion text
             const accordionButton = document.querySelector('.accordion-button');

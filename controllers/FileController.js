@@ -29,6 +29,9 @@ router.get("/processing",  (req, res) => {
 // Endpoint for text analysis. Sample JSON request body = {documents = ["sentence 1", "sentence 2"]}
 router.post("/", upload.array("files"), async (req, res) => {
     const user = await Users.getUserByEmail(req.session.email)
+    // get reference to client via socketId
+    const socketId = req.query["socketId"];
+
     const uploadedItems = [];
 
     // Iterate over each file
@@ -60,26 +63,31 @@ router.post("/", upload.array("files"), async (req, res) => {
 
             console.log(dbResult);
 
+            // time function
+            const start = new Date();
+
             for (entity of res.entityLinking.documents[0].entities) {
-                try {
-                    let addedEntity = await Entity.insert(entity.name);
+                let addedEntity = await Entity.insert(entity.name);
+                if (addedEntity) {
                     await SearchTerms.connect(dbResult[0].id, addedEntity.id);
-                } 
-                catch {
+                } else {
                     let existingEntity = await Entity.get(entity.name);
                     await SearchTerms.connect(dbResult[0].id, existingEntity.id);
                 }
             }
 
+            let end = new Date() - start;
+            console.info('Execution time: %dms', end);
+
             // Flag file in db as completed
             Files.updateFileById(fileInfo, dbResult[0].id).then(async res => {
-                req.io.emit('fileAnalysisComplete', {"file": fileInfo});
+                req.io.to(socketId).emit('fileAnalysisComplete', {"file": fileInfo});
 
                 // check for additional files processing
                 const processChecker = await Files.getFilesInProcess(user.id);
                 if (processChecker < 1) {
                     // Notify client all uploads have processed
-                    req.io.emit('allFilesAnalysed');
+                    req.io.to(socketId).emit('allFilesAnalysed');
                 }
             });
         })
