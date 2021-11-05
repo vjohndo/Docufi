@@ -27,7 +27,7 @@ router.get("/processing",  (req, res) => {
 })
 
 // Endpoint for text analysis. Sample JSON request body = {documents = ["sentence 1", "sentence 2"]}
-router.post("/", upload.array("files"), async (req, res) => {
+router.post("/", async (req, res) => {
     const user = await Users.getUserByEmail(req.session.email)
     // get reference to client via socketId
     const socketId = req.query["socketId"];
@@ -81,11 +81,13 @@ router.post("/", upload.array("files"), async (req, res) => {
 
             // Flag file in db as completed
             Files.updateFileById(fileInfo, dbResult[0].id).then(async res => {
+                console.info(`File analysis complete with socketId: ${socketId}`);
                 req.io.to(socketId).emit('fileAnalysisComplete', {"file": fileInfo});
 
                 // check for additional files processing
                 const processChecker = await Files.getFilesInProcess(user.id);
                 if (processChecker < 1) {
+                    console.info('All files completed with socket: ' + socketId);
                     // Notify client all uploads have processed
                     req.io.to(socketId).emit('allFilesAnalysed');
                 }
@@ -103,7 +105,7 @@ router.post("/", upload.array("files"), async (req, res) => {
     } else {
         res.status(406).json();
     }
-});
+}, upload.array("files"));
 
 async function analyzeAndProcessDocuments(text) {
     // split extracted text to conform to AzureCS requirements
