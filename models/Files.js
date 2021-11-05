@@ -27,14 +27,11 @@ const Files = {
         console.log("passed through the search");
         console.log(searchTerms)
         const sql = {
-            text: 'SELECT files.originalname, files.id, files.sentiment, files.confidencescores, entities.entity FROM files INNER JOIN searchterms ON files.id = searchterms.filesid INNER JOIN entities ON entities.id = searchterms.entitiesid INNER JOIN users ON users.email = $1',
+            text: 'SELECT files.originalname, files.id, files.sentiment, files.confidencescores, entities.entity FROM files INNER JOIN searchterms ON files.id = searchterms.filesid INNER JOIN entities ON entities.id = searchterms.entitiesid INNER JOIN users ON users.id = files.userid WHERE users.email = $1',
             values: [email]
         }
 
-        sql.text += ` WHERE UPPER(entities.entity) LIKE UPPER($2)`;
-        sql.values.push('%'+searchTerms[0]+'%')
-
-        for (let i = 1; i < searchTerms.length; i++) {
+        for (let i = 0; i < searchTerms.length; i++) {
             sql.text += ` AND UPPER(entities.entity) LIKE UPPER($${i+2})`;
             sql.values.push('%'+searchTerms[i]+'%');
         }
