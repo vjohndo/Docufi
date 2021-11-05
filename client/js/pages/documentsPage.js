@@ -14,7 +14,7 @@ async function renderDocumentsPage() {
         </div>
         <div class="row">
             <aside class="col-sm-5">
-                <div id="document-raw-text-wrapper">
+                <div id="document-raw-text-wrapper" class="overflow-auto">
                     
                 </div>
             </aside>
@@ -30,12 +30,12 @@ async function renderDocumentsPage() {
                             </li>
                         </ul>
                     </div>
-                    <form class="card-body tab-content">
+                    <form class="overflow-auto card-body tab-content">
                         <div class="tab-pane active" id="analysed-text">
                             Analysed Text goes here
                         </div>
-                        <div class="tab-pane" id="json">
-                            JSON goes here
+                        <div class="tab-pane json" id="json" >
+                            <pre id="jsonContent" > JSON goes here </pre>
                         </div>
   
                     </form>
@@ -43,6 +43,10 @@ async function renderDocumentsPage() {
             </main>
         </div>
     `;
+
+//     <div class="tab-pane" id="json">
+//     <pre id="jsonContent"> JSON goes here </pre>
+// </div>
     
     // For loop below creates list items and appends them to document list
     for (documentObject of uploadedDocuments.data) {
@@ -61,6 +65,7 @@ async function renderDocumentsPage() {
     // Adding event listener to search bar... automatically updates so can disable searching
     const searchBox = document.getElementById("searchButton");
     searchBox.addEventListener("input", getSearchedDocuments);
+
 }
 
 
@@ -146,4 +151,5 @@ async function onDocumentsSelected(e) {
     
     const payload = await axios.get(`/api/documents/${listItem.dataset.id}`);
     console.log(payload.data);
+    generateTextAnalysisUI(payload.data);
 }
