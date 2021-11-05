@@ -1,51 +1,107 @@
 const express = require("express");
-const Users = require("../models/Users");
+const Users = require("../models/users");
 const Files = require("../models/Files");
+const SearchTerms = require("../models/searchTerms");
+const Entity = require("../models/entity");
 const router = express.Router();
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 const pdf = require("pdf-extraction");
 const fs = require('fs');
 const azureAnalyzeText = require('../models/textAnalysis');
-const {raw} = require("express");
 
 router.use(express.json());
 
-router.get("/:id", (req, res) => {
+router.get("/", (req, res) => {
     res.json({message: "File Controller"});
 })
 
+// Get pending files
+router.get("/processing",  (req, res) => {
+    Files.getFilesInProcess(3).then(result => {
+        res.json(result);
+    })
+    .catch(err => {
+        res.json({message: err});
+    })
+})
+
 // Endpoint for text analysis. Sample JSON request body = {documents = ["sentence 1", "sentence 2"]}
-router.post("/", upload.single("file"), async (req, res) => {
-    console.log(req.file);
-    // TODO: Get actual UserId
-    const fakeUserId = 1;
-    const { originalname, filename, path, size, mimetype } = req.file;
-    const fileInfo = {
-        'FileName' : filename,
-        'OriginalName' : originalname,
-        'FilePath' : path,
-        'FileSize' : size,
-        'FileFormat' : mimetype,
-        'DateUploaded' : new Date(Date.now()).toISOString(),
-        'UserId' : fakeUserId
-    };
+router.post("/", upload.array("files"), async (req, res) => {
+    const user = await Users.getUserByEmail(req.session.email)
+    // get reference to client via socketId
+    const socketId = req.query["socketId"];
 
-    // Write fileInfo to the db
-    await Files.addFile(fileInfo);
+    const uploadedItems = [];
 
-    let dataBuf = fs.readFileSync(req.file.path);
+    // Iterate over each file
+    for (let file of req.files) {
+        const { originalname, filename, path, size, mimetype } = file;
+        const fileInfo = {
+            'FileName' : filename,
+            'OriginalName' : originalname,
+            'FilePath' : path,
+            'FileSize' : size,
+            'FileFormat' : mimetype,
+            'DateUploaded' : new Date(Date.now()).toISOString(),
+            'UserId' : user.id
+        };
 
-    const extractedData = await pdf(dataBuf);
-    const result = await analyzeAndProcessDocuments(extractedData.text)
+        let dataBuf = fs.readFileSync(file.path);
+        const extractedData = await pdf(dataBuf);
 
-    if (!result.success) {
-        res.status(406).json(result);
-    } else {
+        // Write fileInfo to the db after getting file information
+        const dbResult = await Files.addFile(fileInfo);
+        uploadedItems.push(fileInfo);
+
+        // Call API / Analyse Text
+        analyzeAndProcessDocuments(extractedData.text).then(async res => {
+            fileInfo.TextAnalysis = res;
+            fileInfo.Sentiment = res.sentiment.documents[0].sentiment;
+            fileInfo.ConfidenceScores = res.sentiment.documents[0].confidenceScores;
+            fileInfo.Processed = true;
+
+            console.log(dbResult);
+
+            // time function
+            const start = new Date();
+
+            for (entity of res.entityLinking.documents[0].entities) {
+                let addedEntity = await Entity.insert(entity.name);
+                if (addedEntity) {
+                    await SearchTerms.connect(dbResult[0].id, addedEntity.id);
+                } else {
+                    let existingEntity = await Entity.get(entity.name);
+                    await SearchTerms.connect(dbResult[0].id, existingEntity.id);
+                }
+            }
+
+            let end = new Date() - start;
+            console.info('Execution time: %dms', end);
+
+            // Flag file in db as completed
+            Files.updateFileById(fileInfo, dbResult[0].id).then(async res => {
+                req.io.to(socketId).emit('fileAnalysisComplete', {"file": fileInfo});
+
+                // check for additional files processing
+                const processChecker = await Files.getFilesInProcess(user.id);
+                if (processChecker < 1) {
+                    // Notify client all uploads have processed
+                    req.io.to(socketId).emit('allFilesAnalysed');
+                }
+            });
+        })
+    }
+
+    // verify # uploaded files were processed
+    if (uploadedItems.length == Object.values(req.files).length) {
         res.json({
             message: "Uploaded successfully",
-            fileInfo: fileInfo
+            fileInfo: uploadedItems
         });
+
+    } else {
+        res.status(406).json();
     }
 });
 
@@ -57,46 +113,21 @@ async function analyzeAndProcessDocuments(text) {
     // Call AAT Service
     const rawResult = await azureAnalyzeText(textArr);
 
-    // Get and remove erroneous datasets
-    const errors = [];
-    for (const item in rawResult) {
-        const collectionObject = rawResult[item];
-        collectionObject.documents.forEach(obj => {
-           if (obj.error) {
-               errors.push(obj.error);
-               rawResult[item].error = true;
-               console.log(`Error in analysis: ${JSON.stringify(obj.error)}`)
-           }
-        });
-    }
-
-    // only take data with no errors
-    const sanitizedData = Object.entries(rawResult).filter(x => !x[1].error).map(x => {
-        return { [x[0]] : [x[1]]  }
-    })
-
-    // Return if no data found
-    if (sanitizedData.length < 1) {
-        return {
-            'success': false,
-            'message': errors
-        }
-    }
-
-
-    if (!sanitizedData) {
-        console.log('No documents');
-        return {
-            'success': false,
-            'message': 'No documents found in file'
-        }
-    }
-
-    return {
-        'success': true,
-        'message': 'Documents analyzed successfully'
-    }
+    // Output the raw result into the database
+    return rawResult;
 }
 
+async function updateSearchTerms(entities) {
+    for (entity of entities) {
+        try {
+            let addedEntity = await Entity.insert(entity.name);
+            await SearchTerms.connect(addedFile[0].id, addedEntity.id);
+        } 
+        catch {
+            let existingEntity = await Entity.get(entity.name);
+            await SearchTerms.connect(addedFile[0].id, existingEntity.id);
+        }
+    }
+}
 
 module.exports = router;

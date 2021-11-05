@@ -1,12 +1,12 @@
 async function renderHomePage() {
-    let { page } = getClearPage();
+    let { page, pageId } = getClearPage('home');
     page.innerHTML = `
     <div class="row">
         <main class="col-sm-8">
             <div class="drop-zone"> 
                 <span class="btn btn-primary">Browse</span> 
                 <span class="drop-message"> or drop file</span> 
-                <input class="file-input" type="file">
+                <input class="file-input" type="file" multiple>
             </div>  
             <div class="progress hide">
                 <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
@@ -14,20 +14,29 @@ async function renderHomePage() {
         </main>
         <aside class="col-sm-4">
             <div class="selected-zone">
-                <div class="accordion" id="fileUploadAccordion"></div> 
-                <div id="selected-zone-spinner" class="spinner-border text-secondary hidden" role="status">
-                    <span class="sr-only">Loading...</span>
+                <div class="accordion hidden" id="fileUploadAccordion">
+                    <div class="accordion-item">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button text-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#file-collection" aria-expanded="true" aria-controls="file-collection">
+                                Analysing files..
+                            <div class="spinner-border text-secondary show" role="status" id="accordion-spinner" style=""></div>
+                            </button>
+                        </h2>
+                        <div class="accordion-collapse collapse" data-bs-parent="#fileUploadAccordion" id="file-collection" style="">
+                        </div>
+                    </div>
                 </div>
             </div>
         </aside>
     </div>
     `;
 
-    // Hook into existing p element for now to show logged in status. Will add to home page later.
+    // TODO: Move to header (in place of search) > Show logged in status
     let message = createElement('p',[],'Welcome to Docufi');
     const isLoggedIn = await axios.get("/api/sessions")
     message.textContent += (isLoggedIn.data.email) ? ` - Logged in with ${isLoggedIn.data.email}` : ` - Not Logged in`;
     page.appendChild(message);
+    // ------------------------------------------
 
     renderFileUploadElements();
 }
@@ -39,16 +48,25 @@ function renderFileUploadElements() {
     // File dropped into drop zone
     fileInputElement.addEventListener('change',  x => {
         dropZone.classList.remove('on-drop');
-        const selectedFile = x.target.files[0];
-        console.log(selectedFile);
+        const selectedFiles = x.target.files;
 
-        if (selectedFile.type !== 'application/pdf') {
-            // TODO: Alert - File type not permitted;
-            console.log('File Type Not Permitted');
-            return;
-        }
+        // reset fileupload elements TODO: Tidy this up
+        document.querySelector('.selected-zone').innerHTML = `
+            <div class="accordion hidden" id="fileUploadAccordion">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button text-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#file-collection" aria-expanded="true" aria-controls="file-collection">
+                                Analysing files..
+                            <div class="spinner-border text-secondary show" role="status" id="accordion-spinner" style=""></div>
+                        </button>
+                    </h2>
+                    <div class="accordion-collapse collapse" data-bs-parent="#fileUploadAccordion" id="file-collection" style="">
+                    </div>
+                </div>
+            </div>
+        `;
 
-        uploadFile(selectedFile);
+        uploadFile(selectedFiles);
         renderDropZoneElements();
         renderFileUploadElements();
     });
@@ -67,7 +85,7 @@ function renderFileUploadElements() {
 function renderDropZoneElements() {
     let dropZoneHtml = `<span class="btn btn-primary">Browse</span> 
                 <span class="drop-message"> or drop file</span> 
-                <input class="file-input" type="file">
+                <input class="file-input" type="file" multiple>
             `;
     document.querySelector('.drop-zone').innerHTML = dropZoneHtml;
 }
@@ -83,28 +101,31 @@ function uploadFile(selectedFile) {
             if (e.loaded === e.total) {
                 console.log('File upload completed');
                 createAlert('File upload completed', AlertType.SUCCESS);
-                setTimeout(function() {
-
-                }, 700);
             }
         }
     }
     const dataForm = new FormData();
-    dataForm.append('file', selectedFile);
+    dataForm.append('name', 'files');
+
+    Object.values(selectedFile).forEach(file => {
+       dataForm.append('files', file)
+    });
 
     uploadFileProgressStart();
-    addLoadingIcon();
+    console.info(`SocketId: ${window.SOCKET.socketId}`);
+    // pass socketId as query param so we can identify each client
+    axios.post(`/api/file?socketId=${window.SOCKET.socketId}`, dataForm, config).then(res => {
+        res.data.fileInfo.forEach(f => {
+            const { OriginalName, FileFormat, FileName } = f;
+            completeProgressBar();
+            // removeLoadingIcon();
+            addItemToSelectedZone(OriginalName, FileFormat, FileName);
+        });
 
-    axios.post('/api/file', dataForm, config).then(res => {
-        const { OriginalName, FileFormat, FileName } = res.data.fileInfo;
-        completeProgressBar();
-        removeLoadingIcon();
-        addItemToSelectedZone(OriginalName, FileFormat, FileName);
     })
     .catch(err => {
         // TODO: progress bar error red
         completeProgressBar();
-        removeLoadingIcon();
         createAlert(err, AlertType.DANGER);
     });
 }
@@ -119,19 +140,6 @@ function uploadFileProgressStart() {
     progressBar.classList.remove('bg-success');
 }
 
-function addLoadingIcon() {
-    // start selected zone loading spinner TODO: Tidy this up
-    document.querySelector('#selected-zone-spinner').classList.remove('hidden');
-    document.querySelector('.selected-zone').classList.add('loading');
-    document.querySelector('.accordion').classList.add('hidden');
-}
-
-function removeLoadingIcon() {
-    document.querySelector('.selected-zone').classList.remove('loading');
-    document.querySelector('.accordion').classList.remove('hidden');
-    document.querySelector('#selected-zone-spinner').classList.add('hidden');
-}
-
 function completeProgressBar() {
     let progressBar = page.querySelector('.progress-bar');
     progressBar.style.width = `100%`;
@@ -141,25 +149,15 @@ function completeProgressBar() {
 }
 
 function addItemToSelectedZone(originalName, bodyText, fileName) {
-    const accItem = createElement('div',['accordion-item']);
-    const accHeader = createElement('h2', ['accordion-header']);
-    const btn = createElement('button',['accordion-button'], originalName,[
-        {'type':'button'},
-        {'data-bs-toggle':'collapse'},
-        {'data-bs-target':`#a${fileName}`},
-        {'aria-expanded':'true'},
-        {'aria-controls': 'a'+ fileName}
-    ]);
-    let bodyWrapper = createElement('div', ['accordion-collapse','collapse'], "", [
-        {'data-bs-parent':"#fileUploadAccordion"},
-        {'Id': 'a' + fileName}
-    ]);
-    const body = createElement('div',['accordion-body'], bodyText);
-    bodyWrapper.appendChild(body);
-    accHeader.appendChild(btn);
-    accItem.appendChild(accHeader);
-    accItem.appendChild(bodyWrapper);
-    page.querySelector('.accordion').appendChild(accItem);
+    // check if accordion is hidden before appending
+    const accordionElement = document.getElementById('fileUploadAccordion');
+    if (accordionElement.classList.contains('hidden')) {
+        accordionElement.classList.remove('hidden');
+    }
+
+    const fileCollection = document.querySelector('.accordion-collapse');
+    const item = createElement('div',['accordion-body'], originalName);
+    fileCollection.appendChild(item);
 }
 
 

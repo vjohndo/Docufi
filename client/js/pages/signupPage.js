@@ -1,6 +1,6 @@
 function renderSignup() {
     // Get the page, create a form
-    const page = document.getElementById("page");
+    let { page } = getClearPage();
     page.replaceChildren("");
     page.innerHTML = `
         <div class="container-md">

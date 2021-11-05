@@ -40,7 +40,7 @@ const Users = {
             text: 'SELECT * FROM Users WHERE email = $1',
             values: [email]
         };
-        return db.query(sql).then(dbRes => dbRes.rows);
+        return db.query(sql).then(dbRes => dbRes.rows[0]);
     }
 }
 

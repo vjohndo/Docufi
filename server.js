@@ -2,6 +2,7 @@
 const express = require("express");
 const textAnalysisController = require("./controllers/textAnalysis");
 const fileController = require("./controllers/FileController");
+const documentController = require("./controllers/DocumentController")
 
 // Load the .env and configure it. 
 const dotenv = require("dotenv");
@@ -19,6 +20,17 @@ const errorHandler = require('./middleware/errorhandler');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// SocketIo
+const { createServer } = require("http");
+const socketIo = require("socket.io");
+const server = createServer(app)
+const io = socketIo(server, { cors: { origin: "*" } });
+
+// pass socket io instance via middleware
+app.use((req, res, next) => {
+    req.io = io;
+    return next();
+});
 app.use(express.json({limit: '50mb'}));
 app.use(express.urlencoded({limit: '50mb'}));
 app.use(express.static('client'));
@@ -39,26 +51,25 @@ app.use(
     })
 );
 
-
+app.use("/api/documents", documentController);
 app.use("/api/sessions", sessionsController);
-// Sign up route
 app.use("/api/signup", signupController);
 
 app.use((req, res, next) => {
-   if (!req.session.email) {
-       res.status(401).send();
-   } else {
-       next();
-   }
+    // sessions are being set as "email";
+    if (!req.session.email) {
+        res.status(401).send();
+    } else {
+        next();
+    }
 });
 
 // router for API for text analysis
-app.use("/api/textAnalysis", textAnalysisController);
 app.use("/api/file", fileController);
 
 app.use(errorHandler);
 
 // Start the web server
-app.listen(port, () => {
+server.listen(port, () => {
     console.log(`listening on port http://localhost:${port}`);
 });
