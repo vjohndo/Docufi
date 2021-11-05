@@ -1,6 +1,6 @@
 window.SOCKET = {};
 SOCKET.socketId = "";
-const socket = io("http://localhost:3000");
+const socket = io("https://docufi.azurewebsites.net/");
 
 axios.get('/api/sessions').then(response => {
     // render authenticated defaults
