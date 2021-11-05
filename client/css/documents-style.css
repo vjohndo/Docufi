@@ -44,6 +44,10 @@
     padding: 0 !important;
 }
 
-.entity-bold {
+.label-bold {
     font-weight: bold !important;
+}
+
+.doc-list-hover:hover {
+    cursor: pointer;
 }

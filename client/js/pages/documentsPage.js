@@ -10,7 +10,7 @@ async function renderDocumentsPage() {
             <div class="row">
                 <div class="col-md-7 search-div">
                     <div id="search-wrapper" class="list-group">
-                        <form class="d-flex">
+                        <form id="search-form" class="d-flex">
                             <input id="searchButton" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Search</button>
                         </form>
@@ -84,17 +84,28 @@ async function renderDocumentsPage() {
     
     // For loop below creates list items and appends them to document list
     for (documentObject of uploadedDocuments.data) {
-        
-        let docElement = createElement("li", ["list-group-item"], documentObject.originalname);
+
+        let docElement = createElement("li", ["list-group-item"], "");
         docElement.dataset.id = documentObject.id;
+
+        let docTitleSpan = createElement("span", [], documentObject.originalname);
+        docTitleSpan.classList.add("span-doc-list");
+        docElement.append(docTitleSpan);
+
+        let sentimentSpan = createElement("span", [], "sentiment: " + documentObject.sentiment);
+        let confidenceSpan = createElement("span", [], "confidence scores: " + `Positive: ${Math.round(documentObject.confidencescores.positive * 100)} %, Neutral: ${Math.round(documentObject.confidencescores.neutral * 100)} %, Negative: ${Math.round(documentObject.confidencescores.negative * 100)} %`);
+
+        [sentimentSpan, confidenceSpan].forEach( (x) => {
+            x.classList.add("span-doc-list-subtitle");
+            docElement.append(x);
+        });
+        
         docElement.addEventListener('click', onDocumentsSelected);
 
         const unorderedList = document.getElementById("documentList");
+        unorderedList.classList.add("doc-list-hover");
         unorderedList.appendChild(docElement);
     }
-
-    let message = createElement('p',[],'This is the documents page');
-    page.appendChild(message);
 
     // Adding event listener to search bar... automatically updates so can disable searching
     const searchBox = document.getElementById("searchButton");

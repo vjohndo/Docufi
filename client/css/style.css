@@ -49,3 +49,12 @@ a {
     text-align: center;
 }
 
+.span-doc-list {
+    display: block;
+}
+
+.span-doc-list-subtitle {
+    display: block;
+    font-size: xx-small;
+}
+

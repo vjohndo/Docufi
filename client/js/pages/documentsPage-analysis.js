@@ -58,7 +58,7 @@ function generateTextAnalysisUI(jsonPayload) {
 
     const sentimentSentence = jsonPayload.textanalysis.sentiment.documents[0].sentences
     for (const [index, entityObj] of sentimentSentence.entries()) {
-        newHeaderData.innerHTML += `Sentence ${index + 1}:  ${entityObj.sentiment.toUpperCase()}<br>  [Positive: ${Math.round(entityObj.confidenceScores.positive * 100)} %, Neutral: ${Math.round(entityObj.confidenceScores.neutral * 100)} %, Negative: ${Math.round(entityObj.confidenceScores.negative * 100)} % <br><br>`
+        newHeaderData.innerHTML += `Sentence ${index + 1}:  ${entityObj.sentiment.toUpperCase()}<br>  [Positive: ${Math.round(entityObj.confidenceScores.positive * 100)} %, Neutral: ${Math.round(entityObj.confidenceScores.neutral * 100)} %, Negative: ${Math.round(entityObj.confidenceScores.negative * 100)} % ]<br><br>`
     }
 
     newTableRow.appendChild(newHeaderData);
