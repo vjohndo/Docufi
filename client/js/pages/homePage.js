@@ -111,10 +111,10 @@ function uploadFile(selectedFile) {
        dataForm.append('files', file)
     });
 
-
     uploadFileProgressStart();
-
-    axios.post('/api/file', dataForm, config).then(res => {
+    console.info(`SocketId: ${window.SOCKET.socketId}`);
+    // pass socketId as query param so we can identify each client
+    axios.post(`/api/file?socketId=${window.SOCKET.socketId}`, dataForm, config).then(res => {
         res.data.fileInfo.forEach(f => {
             const { OriginalName, FileFormat, FileName } = f;
             completeProgressBar();
