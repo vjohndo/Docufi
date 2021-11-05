@@ -7,7 +7,37 @@ async function renderDocumentsPage() {
     page.innerHTML = `
         <!-- Placeholder for the documents list -->
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-7 search-div">
+                <div id="search-wrapper" class="list-group">
+                    <form class="d-flex">
+                        <input id="searchButton" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    </form>
+                    <div class="filter-wrapper">
+                        <div class="sentiment-elements">
+                            <p>Sentiment Filters</p>
+                            <div class="form-check form-switch">
+                              <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                              <label class="form-check-label" for="flexSwitchCheckDefault">Positive</label>
+                            </div>
+                            <div class="form-check form-switch">
+                              <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
+                              <label class="form-check-label" for="flexSwitchCheckChecked">Negative</label>
+                            </div>
+                            <div class="form-check form-switch">
+                              <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
+                              <label class="form-check-label" for="flexSwitchCheckChecked">Neutral</label>
+                            </div>
+                            <div class="form-check form-switch">
+                              <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
+                              <label class="form-check-label" for="flexSwitchCheckChecked">Mixed</label>
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5 document-wrapper">
                 <ul id="documentList" class="list-group">
                 </ul>
             </div>
