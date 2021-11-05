@@ -5,7 +5,7 @@ const SearchTerms = require("../models/searchTerms");
 const Entity = require("../models/entity");
 const router = express.Router();
 const multer = require("multer");
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ dest: ".uploads/" });
 const pdf = require("pdf-extraction");
 const fs = require('fs');
 const azureAnalyzeText = require('../models/textAnalysis');
@@ -27,10 +27,10 @@ router.get("/processing",  (req, res) => {
 })
 
 // Endpoint for text analysis. Sample JSON request body = {documents = ["sentence 1", "sentence 2"]}
-router.post("/", async (req, res) => {
+router.post("/", upload.array("files"), async (req, res) => {
     const user = await Users.getUserByEmail(req.session.email)
     // get reference to client via socketId
-    const socketId = req.query["socketId"];
+    const socketId = req.query.socketId;
 
     const uploadedItems = [];
 
@@ -60,8 +60,6 @@ router.post("/", async (req, res) => {
             fileInfo.Sentiment = res.sentiment.documents[0].sentiment;
             fileInfo.ConfidenceScores = res.sentiment.documents[0].confidenceScores;
             fileInfo.Processed = true;
-
-            console.log(dbResult);
 
             // time function
             const start = new Date();
