@@ -100,7 +100,7 @@ function uploadFile(selectedFile) {
             progressBar.style.width = `${percentCompleted}%`;
             if (e.loaded === e.total) {
                 console.log('File upload completed');
-                createAlert('File upload completed', AlertType.SUCCESS);
+                // createAlert('File upload completed', AlertType.SUCCESS);
             }
         }
     }
@@ -126,7 +126,7 @@ function uploadFile(selectedFile) {
     .catch(err => {
         // TODO: progress bar error red
         completeProgressBar();
-        createAlert(err, AlertType.DANGER);
+        createAlert(err, AlertType.ERROR);
     });
 }
 
