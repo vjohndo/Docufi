@@ -3,6 +3,9 @@ async function renderHomePage() {
     page.innerHTML = `
     <div class="row">
         <main class="col-sm-8">
+            <div class="drop-zone-title-wrapper">
+                <h6>Analyse your documents by uploading to the drop zone</h6>
+            </div>
             <div class="drop-zone"> 
                 <span class="btn btn-primary">Browse</span> 
                 <span class="drop-message"> or drop file</span> 
@@ -13,6 +16,9 @@ async function renderHomePage() {
             </div>
         </main>
         <aside class="col-sm-4">
+            <div class="selected-zone-title-wrapper">
+                <h6>Analysis Status</h6>
+            </div>
             <div class="selected-zone">
                 <div class="accordion hidden" id="fileUploadAccordion">
                     <div class="accordion-item">
@@ -32,10 +38,12 @@ async function renderHomePage() {
     `;
 
     // TODO: Move to header (in place of search) > Show logged in status
-    let message = createElement('p',[],'Welcome to Docufi');
+    const loggedInWrapper = createElement('div',['login-wrapper'], "");
+    let message = createElement('p',['font-weight-light'],'Welcome to Docufi');
     const isLoggedIn = await axios.get("/api/sessions")
     message.textContent += (isLoggedIn.data.email) ? ` - Logged in with ${isLoggedIn.data.email}` : ` - Not Logged in`;
-    page.appendChild(message);
+    loggedInWrapper.appendChild(message);
+    page.appendChild(loggedInWrapper);
     // ------------------------------------------
 
     renderFileUploadElements();
@@ -108,26 +116,31 @@ function uploadFile(selectedFile) {
     dataForm.append('name', 'files');
 
     Object.values(selectedFile).forEach(file => {
-       dataForm.append('files', file)
+        if (file.type !== 'application/pdf') {
+            createAlert(`${file.name} is not of type 'PDF'. File is not analysed`, AlertType.INFO);
+        } else {
+            dataForm.append('files', file)
+            uploadFileProgressStart();
+            console.info(`SocketId: ${window.SOCKET.socketId}`);
+            // pass socketId as query param so we can identify each client
+            axios.post(`/api/file?socketId=${window.SOCKET.socketId}`, dataForm, config).then(res => {
+                res.data.fileInfo.forEach(f => {
+                    const { OriginalName, FileFormat, FileName } = f;
+                    completeProgressBar();
+                    // removeLoadingIcon();
+                    addItemToSelectedZone(OriginalName, FileFormat, FileName);
+                });
+
+            })
+            .catch(err => {
+                // TODO: progress bar error red
+                completeProgressBar();
+                createAlert(err, AlertType.ERROR);
+            });
+        }
     });
 
-    uploadFileProgressStart();
-    console.info(`SocketId: ${window.SOCKET.socketId}`);
-    // pass socketId as query param so we can identify each client
-    axios.post(`/api/file?socketId=${window.SOCKET.socketId}`, dataForm, config).then(res => {
-        res.data.fileInfo.forEach(f => {
-            const { OriginalName, FileFormat, FileName } = f;
-            completeProgressBar();
-            // removeLoadingIcon();
-            addItemToSelectedZone(OriginalName, FileFormat, FileName);
-        });
 
-    })
-    .catch(err => {
-        // TODO: progress bar error red
-        completeProgressBar();
-        createAlert(err, AlertType.ERROR);
-    });
 }
 
 function uploadFileProgressStart() {

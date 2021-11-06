@@ -1,4 +1,4 @@
-#document-raw-text-wrapper, #document-analysis-wrapper {
+#document-raw-text-wrapper, #document-analysis-wrapper, #documentList, #search-wrapper, .filter-wrapper{
     height: 200px;
     border: 1px solid lightgray;
     border-radius: 8px;
@@ -12,4 +12,46 @@
 
 .text-success {
     font-weight: bold;
+}
+
+#documentList {
+    height: 232px;
+    overflow: auto;
+}
+
+.search-div {
+    height: 250px;
+}
+
+#search-wrapper {
+    padding: 10px;
+    height: 232px;
+}
+
+.filter-wrapper {
+    padding: 10px;
+    margin: 10px 0 10px 0;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.sentiment-elements {
+    border-right: 1px solid lightgray;
+    padding-right: 15px;
+}
+
+.no-padding {
+    padding: 0 !important;
+}
+
+.label-bold {
+    font-weight: bold !important;
+}
+
+.doc-list-hover:hover {
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
 }

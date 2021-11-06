@@ -1,5 +1,7 @@
 window.SOCKET = {};
 SOCKET.socketId = "";
+// local development
+// const socket = io("http://localhost:3000");
 const socket = io("https://docufi.azurewebsites.net/");
 
 axios.get('/api/sessions').then(response => {
@@ -52,6 +54,7 @@ socket.on("allFilesAnalysed", () => {
 
             break;
         case 'documents':
+            createAlert('All files are analysed', AlertType.SUCCESS);
             break;
         default:
             console.log(`All files analysed - No condition for pageId: ${pageId}`);

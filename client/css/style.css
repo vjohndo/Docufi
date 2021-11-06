@@ -2,6 +2,10 @@
   box-sizing: border-box;
 }
 
+body, html {
+    height: 100%;
+}
+
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   min-width: 490px;
@@ -9,11 +13,6 @@ body {
 
 a {
   color: #00B7FF;
-}
-
-span {
-    display: block;
-    font-size: x-small;
 }
 
 .nav-item {
@@ -48,4 +47,17 @@ span {
 .bootstrap-growl {
     right: 60px;
     text-align: center;
+}
+
+.span-doc-list {
+    display: block;
+}
+
+.span-doc-list-subtitle {
+    display: block;
+    font-size: xx-small;
+}
+
+.login-wrapper {
+
 }

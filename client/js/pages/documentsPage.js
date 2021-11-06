@@ -6,128 +6,202 @@ async function renderDocumentsPage() {
     let { page, pageId } = getClearPage('documents');
     page.innerHTML = `
         <!-- Placeholder for the documents list -->
-        <div class="row">
-            <div class="col-md-12">
-                <ul id="documentList" class="list-group">
-                </ul>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7 search-div">
+                    <div id="search-wrapper" class="list-group">
+                        <form id="search-form" class="d-flex">
+                            <input id="searchInput" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-success" type="submit">Search</button>
+                        </form>
+                        <div class="filter-wrapper">
+                            <div class="sentiment-elements">
+                                <p>Sentiment Filters</p>
+                                <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+                                <label class="form-check-label" for="flexSwitchCheckDefault">Positive</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
+                                <label class="form-check-label" for="flexSwitchCheckChecked">Negative</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
+                                <label class="form-check-label" for="flexSwitchCheckChecked">Neutral</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked">
+                                <label class="form-check-label" for="flexSwitchCheckChecked">Mixed</label>
+                                </div>
+                            </div>
+                        
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 document-wrapper">
+                    <ul id="documentList" class="list-group">
+                    </ul>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <aside class="col-sm-5">
-                <div id="document-raw-text-wrapper">
-                    
-                </div>
-            </aside>
-            <main class="col-sm-7">
-                <div id="document-analysis-wrapper" class="card">
-                    <div class="card-header">
-                        <ul class="nav nav-tabs card-header-tabs" data-bs-tabs="tabs">
-                            <li class="nav-item">
-                                <a class="nav-link active" aria-current="true" data-bs-toggle="tab" href="#analysed-text">Analysed Text</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-bs-toggle="tab" href="#json">JSON</a>
-                            </li>
-                        </ul>
+        <div class="container">
+            <div class="row" style="height: 50vh;">
+                <aside class="col-sm-5 h-100">
+                    <div id="document-raw-text-wrapper" class="overflow-auto h-100">
+                        
                     </div>
-                    <form class="card-body tab-content">
-                        <div class="tab-pane active" id="analysed-text">
-                            Analysed Text goes here
+                </aside>
+                <main class="col-sm-7 h-100">
+                    <div id="document-analysis-wrapper" class="card h-100">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs" data-bs-tabs="tabs">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="true" data-bs-toggle="tab" href="#analysed-text">Analysed Text</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-bs-toggle="tab" href="#json">JSON</a>
+                                </li>
+                            </ul>
                         </div>
-                        <div class="tab-pane" id="json">
-                            JSON goes here
-                        </div>
-  
-                    </form>
-                </div>
-            </main>
+                        <form class="overflow-auto card-body tab-content">
+                            <div class="tab-pane active" id="analysed-text">
+                                Analysed Text goes here
+                            </div>
+                            <div class="tab-pane json" id="json" >
+                                <pre id="jsonContent" > JSON goes here </pre>
+                            </div>
+    
+                        </form>
+                    </div>
+                </main>
+            </div>
         </div>
     `;
+
+//     <div class="tab-pane" id="json">
+//     <pre id="jsonContent"> JSON goes here </pre>
+// </div>
     
     // For loop below creates list items and appends them to document list
     for (documentObject of uploadedDocuments.data) {
-        
-        let docElement = createElement("li", ["list-group-item"], documentObject.originalname);
+
+        let docElement = createElement("li", ["list-group-item"], "");
         docElement.dataset.id = documentObject.id;
+        docElement.dataset.sentiment = documentObject.sentiment;
+        docElement.dataset.positive = documentObject.confidencescores.positive;
+        docElement.dataset.neutral = documentObject.confidencescores.neutral;
+        docElement.dataset.negative = documentObject.confidencescores.negative;
+
+        let docTitleSpan = createElement("span", [], documentObject.originalname);
+        docTitleSpan.classList.add("span-doc-list");
+        docElement.append(docTitleSpan);
+
+        let sentimentSpan = createElement("span", [], "sentiment: " + documentObject.sentiment);
+        let confidenceSpan = createElement("span", [], "confidence scores: " + `Positive: ${Math.round(documentObject.confidencescores.positive * 100)} %, Neutral: ${Math.round(documentObject.confidencescores.neutral * 100)} %, Negative: ${Math.round(documentObject.confidencescores.negative * 100)} %`);
+
+        [sentimentSpan, confidenceSpan].forEach( (x) => {
+            x.classList.add("span-doc-list-subtitle");
+            docElement.append(x);
+        });
+        
         docElement.addEventListener('click', onDocumentsSelected);
 
         const unorderedList = document.getElementById("documentList");
+        unorderedList.classList.add("doc-list-hover");
         unorderedList.appendChild(docElement);
     }
 
-    let message = createElement('p',[],'This is the documents page');
-    page.appendChild(message);
-
     // Adding event listener to search bar... automatically updates so can disable searching
-    const searchBox = document.getElementById("searchButton");
-    searchBox.addEventListener("input", getSearchedDocuments);
+    const searchForm = document.getElementById("search-form");
+    searchForm.addEventListener("submit", getSearchedDocuments);
+
+    // Filter based on sentiment
+    const checkboxes = document.querySelectorAll('input[type=checkbox]');
+    checkboxes.forEach( (checkbox) => {
+        checkbox.addEventListener("change", (event) => {
+            const docElements = document.querySelectorAll(".list-group-item");
+            docElements.forEach( (listItem) => {
+                if (listItem.dataset.sentiment === event.target.nextElementSibling.innerHTML.toLowerCase()) {
+                    listItem.classList.toggle("hidden");
+                }
+            })
+        })
+    })
 }
 
 
 async function getSearchedDocuments(event) {
-    // Only run code if the current rendering of the page does not contain a documentList
-    if (document.getElementById("documentList")) {
 
-        //  Only run code if search word is greater in length than three
-        if (event.target.value.length > 3) {
+    event.preventDefault();
 
-            let capturedValue = event.target.value
-            
-            // Want to only start the search after 1 sec of inactivity
-            setTimeout( async () => {
-                const searchBox = document.getElementById("searchButton");
-                if (capturedValue === searchBox.value) {
-    
-                    // Grab the document list and set it to empty
-                    const unorderedList = document.getElementById("documentList");
-                    unorderedList.innerHTML = "";
-    
-                    // Get the search terms, split on spaces into an array, set them as query string parameters for a get call
-                    let searchTerms = document.getElementById("searchButton").value.split(" ");
-                    let filteredSearchTerms = searchTerms.filter( (element) => element !== "" );
-                    let getParams = Object.assign({}, filteredSearchTerms)
-                    let results = await axios.get("/api/documents/search", {params: getParams});
-                    
-                    let filesMatchingEntitiesArr = results.data;
+    const searchInput = document.getElementById("searchInput");
 
-                    // Initialise a doc list
-                    let docList = {};
-                    
-                    // If no matching entities in DB, create a No items found list item
-                    if (filesMatchingEntitiesArr.length === 0) {
-                        let docElement = createElement("li", ["list-group-item"], "No items found");
-                        unorderedList.appendChild(docElement);
-    
-                    } else {
-                        // For each result, add this to the docList object and keep adding matched entities to the corresponding file id
-                        for (object of filesMatchingEntitiesArr) {
-                            if (docList[object.id]) {
-                                docList[object.id].entity.push(object.entity)
-                            } else {
-                                docList[object.id] = {originalname: object.originalname, entity: [object.entity], sentiment: object.sentiment, confidenceScores: object.confidencescores} 
-                            }
-                        }
+    let searchValue = searchInput.value
+    if (searchValue === "") {
+        renderDocumentsPage();
+    } else {
+        // Grab the document list and set it to empty
+        const unorderedList = document.getElementById("documentList");
+        unorderedList.innerHTML = "";
 
-                        // For loop below creates list items and appends them to document list
-                        for (const [documentId, documentObject] of Object.entries(docList)) {
-                            let docElement = createElement("li", ["list-group-item"], documentObject.originalname);
-                            docElement.addEventListener('click', onDocumentsSelected);
-                            docElement.dataset.id = documentId;
-    
-                            let entitiesSpan = createElement("span", [], "matching entities: " + documentObject.entity.join(", "));
-                            let sentimentSpan = createElement("span", [], "sentiment: " + documentObject.sentiment);
-                            let confidenceSpan = createElement("span", [], "confidence scores: " + JSON.stringify(documentObject.confidenceScores));
-                            
-                            [entitiesSpan, sentimentSpan, confidenceSpan].forEach( (x) => docElement.append(x));
+        // Get the search terms, split on spaces into an array, set them as query string parameters for a get call
+        let searchTerms = searchInput.value.split(" ");
+        let filteredSearchTerms = searchTerms.filter( (element) => element !== "" );
+        let getParams = Object.assign({}, filteredSearchTerms)
+        let results = await axios.get("/api/documents/search", {params: getParams});
+        
+        let filesMatchingEntitiesArr = results.data;
 
-                            unorderedList.append(docElement);
-                        }
-    
-                        console.log(docList);
-                    }
+        // Initialise a doc list
+        let docList = {};
+        
+        // If no matching entities in DB, create a No items found list item
+        if (filesMatchingEntitiesArr.length === 0) {
+            let docElement = createElement("li", ["list-group-item"], "No items found");
+            unorderedList.appendChild(docElement);
+
+        } else {
+            // For each result, add this to the docList object and keep adding matched entities to the corresponding file id
+            for (object of filesMatchingEntitiesArr) {
+                if (docList[object.id]) {
+                    docList[object.id].entity.push(object.entity)
+                } else {
+                    docList[object.id] = {originalname: object.originalname, entity: [object.entity], sentiment: object.sentiment, confidenceScores: object.confidencescores} 
                 }
-            }, 1000)
-        } 
+            }
+
+            console.log(docList);
+
+            // For loop below creates list items and appends them to document list
+            for (const [documentId, documentObject] of Object.entries(docList)) {
+
+                let docElement = createElement("li", ["list-group-item"], "");
+                docElement.dataset.id = documentId;
+                docElement.dataset.sentiment = documentObject.sentiment;
+                docElement.dataset.positive = documentObject.confidenceScores.positive;
+                docElement.dataset.neutral = documentObject.confidenceScores.neutral;
+                docElement.dataset.negative = documentObject.confidenceScores.negative;
+
+                let docTitleSpan = createElement("span", [], documentObject.originalname);
+                docTitleSpan.classList.add("span-doc-list");
+                docElement.append(docTitleSpan);
+                
+                let entitiesSpan = createElement("span", [], "matched entities: " + documentObject.entity.join(", "));
+                let sentimentSpan = createElement("span", [], "sentiment: " + documentObject.sentiment);
+                let confidenceSpan = createElement("span", [], "confidence scores: " + `Positive: ${Math.round(documentObject.confidenceScores.positive * 100)} %, Neutral: ${Math.round(documentObject.confidenceScores.neutral * 100)} %, Negative: ${Math.round(documentObject.confidenceScores.negative * 100)} %`);
+
+                [entitiesSpan, sentimentSpan, confidenceSpan].forEach( (x) => {
+                    x.classList.add("span-doc-list-subtitle");
+                    docElement.append(x);
+                });
+                
+                docElement.addEventListener('click', onDocumentsSelected);
+
+                const unorderedList = document.getElementById("documentList");
+                unorderedList.classList.add("doc-list-hover");
+                unorderedList.appendChild(docElement);
+            }
+        }
     }
 }
 
@@ -143,7 +217,7 @@ async function onDocumentsSelected(e) {
     }
 
     listItem.classList.add('active');
-    
+
     const payload = await axios.get(`/api/documents/${listItem.dataset.id}`);
-    console.log(payload.data);
+    generateTextAnalysisUI(payload.data);
 }
