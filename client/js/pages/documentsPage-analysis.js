@@ -54,11 +54,11 @@ function generateTextAnalysisUI(jsonPayload) {
     
     const sentimentDoc = jsonPayload.textanalysis.sentiment.documents[0]
 
-    newHeaderData.innerHTML += `Sentence ${1}:  ${sentimentDoc.sentiment}<br>  [Positive: ${sentimentDoc.confidenceScores.positive * 100} % | Neutral: ${sentimentDoc.confidenceScores.neutral * 100} % | Negative: ${sentimentDoc.confidenceScores.negative * 100} % <br><br>`
+    newHeaderData.innerHTML += `Document:  ${sentimentDoc.sentiment}<br>  [Positive: ${sentimentDoc.confidenceScores.positive * 100} % | Neutral: ${sentimentDoc.confidenceScores.neutral * 100} % | Negative: ${sentimentDoc.confidenceScores.negative * 100} %] <br><br>`
 
     const sentimentSentence = jsonPayload.textanalysis.sentiment.documents[0].sentences
     for (const [index, entityObj] of sentimentSentence.entries()) {
-        newHeaderData.innerHTML += `Sentence ${index + 1}:  ${entityObj.sentiment.toUpperCase()}<br>  [Positive: ${Math.round(entityObj.confidenceScores.positive * 100)} %, Neutral: ${Math.round(entityObj.confidenceScores.neutral * 100)} %, Negative: ${Math.round(entityObj.confidenceScores.negative * 100)} % ]<br><br>`
+        newHeaderData.innerHTML += `Sentence ${index + 1}:  ${entityObj.sentiment.toUpperCase()}<br>  [Positive: ${Math.round(entityObj.confidenceScores.positive * 100)} %, Neutral: ${Math.round(entityObj.confidenceScores.neutral * 100)} %, Negative: ${Math.round(entityObj.confidenceScores.negative * 100)} %]<br><br>`
     }
 
     newTableRow.appendChild(newHeaderData);
