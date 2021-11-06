@@ -54,6 +54,7 @@ socket.on("allFilesAnalysed", () => {
 
             break;
         case 'documents':
+            createAlert('All files are analysed', AlertType.SUCCESS);
             break;
         default:
             console.log(`All files analysed - No condition for pageId: ${pageId}`);
