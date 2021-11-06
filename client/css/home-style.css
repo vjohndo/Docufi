@@ -11,8 +11,12 @@
 }
 
 /* Text Color */
-h6, p {
+h6, p, td, #document-raw-text-wrapper {
     color: dimgray;
+}
+
+th, tr {
+    color: rgb(94, 94, 94);
 }
 
 .drop-zone-title-wrapper, .selected-zone-title-wrapper {
