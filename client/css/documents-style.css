@@ -55,3 +55,7 @@
 .hidden {
     display: none;
 }
+
+.raw-text-padding {
+    padding: 15px !important;
+}

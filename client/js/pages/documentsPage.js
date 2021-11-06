@@ -9,6 +9,7 @@ async function renderDocumentsPage() {
         <div class="container">
             <div class="row">
                 <div class="col-md-7 search-div">
+                    <h6 class="text-secondary">Search Tools</h6>
                     <div id="search-wrapper" class="list-group">
                         <form id="search-form" class="d-flex">
                             <input id="searchInput" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
@@ -39,6 +40,7 @@ async function renderDocumentsPage() {
                     </div>
                 </div>
                 <div class="col-md-5 document-wrapper">
+                    <h6 class="text-secondary">Documents List</h6>
                     <ul id="documentList" class="list-group">
                     </ul>
                 </div>
@@ -47,11 +49,13 @@ async function renderDocumentsPage() {
         <div class="container">
             <div class="row" style="height: 50vh;">
                 <aside class="col-sm-5 h-100">
-                    <div id="document-raw-text-wrapper" class="overflow-auto h-100">
-                        
+                    <h6 class="text-secondary">Raw Text</h6>
+                    <div id="document-raw-text-wrapper" class="overflow-auto h-100 raw-text-padding">
+
                     </div>
                 </aside>
                 <main class="col-sm-7 h-100">
+                    <h6 class="text-secondary">Text Analysis</h6>
                     <div id="document-analysis-wrapper" class="card h-100">
                         <div class="card-header">
                             <ul class="nav nav-tabs card-header-tabs" data-bs-tabs="tabs">
@@ -65,10 +69,10 @@ async function renderDocumentsPage() {
                         </div>
                         <form class="overflow-auto card-body tab-content">
                             <div class="tab-pane active" id="analysed-text">
-                                Analysed Text goes here
+                                Select a document to view analysis
                             </div>
                             <div class="tab-pane json" id="json" >
-                                <pre id="jsonContent" > JSON goes here </pre>
+                                <pre id="jsonContent" > Select a document to view analysis </pre>
                             </div>
     
                         </form>
@@ -77,10 +81,6 @@ async function renderDocumentsPage() {
             </div>
         </div>
     `;
-
-//     <div class="tab-pane" id="json">
-//     <pre id="jsonContent"> JSON goes here </pre>
-// </div>
     
     // For loop below creates list items and appends them to document list
     for (documentObject of uploadedDocuments.data) {
@@ -219,5 +219,6 @@ async function onDocumentsSelected(e) {
     listItem.classList.add('active');
 
     const payload = await axios.get(`/api/documents/${listItem.dataset.id}`);
+    console.log(payload.data);
     generateTextAnalysisUI(payload.data);
 }
