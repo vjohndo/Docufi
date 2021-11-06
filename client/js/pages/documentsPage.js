@@ -219,6 +219,6 @@ async function onDocumentsSelected(e) {
     listItem.classList.add('active');
 
     const payload = await axios.get(`/api/documents/${listItem.dataset.id}`);
-    console.log(payload.data);
+    // console.log(payload.data);
     generateTextAnalysisUI(payload.data);
 }
