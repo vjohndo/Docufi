@@ -10,13 +10,22 @@
     display: none;
 }
 
+/* Text Color */
+h6, p {
+    color: dimgray;
+}
+
+.drop-zone-title-wrapper, .selected-zone-title-wrapper {
+    text-align: left;
+}
+
 .drop-zone {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
     max-width: 100%;
-    height: 100px;
+    height: 150px;
     padding: 25px;
     border: 1px dashed lightgray;
     border-radius: 5px;
@@ -26,8 +35,8 @@
 .selected-zone {
     border: 1px dashed lightgray;
     border-radius: 5px;
-    min-height: 100px;
-    height: auto;
+    min-height: 150px;
+    height: 150px;
     background-color: #F8F9FA;
 }
 
@@ -72,3 +81,4 @@
 .accordion-button .fa-check {
     margin-left: 5px;
 }
+
