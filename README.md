@@ -14,6 +14,8 @@ Docufi is a Node / Express JS Single Page application that allows users to uploa
 
 ## Environment Variables
 
+## Deployment Pipeline
+
 Sign up / Use default user
 
 @ upp22 (Shaunn Diamond)
