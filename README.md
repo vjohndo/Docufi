@@ -24,10 +24,10 @@ Create an environment file named .env and add the following:
 ENDPOINT="Your AZURE end point here"\
 TEXT_ANALYTICS_API_KEY="<"Your AZURE key here"\
 EXPRESS_SESSION_SECRET_KEY="Your secret key here"\
-DB_USER="Your secret key here"\
-DB_PASSWORD="Your secret key here"\
-DB_HOST="Your secret key here"\
-DB_NAME="Your local database name here"\
+DB_USER="yourDbUser"\
+DB_PASSWORD="yourDbPassword"\
+DB_HOST="dbhost"\
+DB_NAME="shouldbeDocufi"\
 
 ## Configure Database
 
