@@ -20,14 +20,14 @@ To install the dependencies, run this from the project directory\
 
 Create an environment file named .env and add the following:
 
->NODE_ENV="production"\
-ENDPOINT="Your AZURE end point here"\
-TEXT_ANALYTICS_API_KEY="<"Your AZURE key here"\
-EXPRESS_SESSION_SECRET_KEY="Your secret key here"\
-DB_USER="yourDbUser"\
-DB_PASSWORD="yourDbPassword"\
-DB_HOST="dbhost"\
-DB_NAME="shouldbeDocufi"\
+>NODE_ENV=production\
+ENDPOINT=Your AZURE end point here\
+TEXT_ANALYTICS_API_KEY=Your AZURE key here\
+EXPRESS_SESSION_SECRET_KEY=Your secret key here\
+DB_USER=yourDbUser\
+DB_PASSWORD=yourDbPassword\
+DB_HOST=dbhost\
+DB_NAME=shouldbeDocufi
 
 ## Configure Database
 
