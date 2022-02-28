@@ -2,7 +2,7 @@ window.SOCKET = {};
 SOCKET.socketId = "";
 // local development
 // const socket = io("http://localhost:3000");
-const socket = io.connect("https://docufi-app.herokuapp.com");
+const socket = io("https://docufi-app.herokuapp.com/");
 
 axios.get('/api/sessions').then(response => {
     // render authenticated defaults
@@ -17,6 +17,7 @@ axios.get('/api/sessions').then(response => {
 socket.on("connect", () => {
     SOCKET.socketId = socket.id;
     console.log(`Socket Connected (id): ${SOCKET.socketId}`);
+    console.log(`This is running`);
 });
 
 socket.on("fileAnalysisComplete", (payload) => {
