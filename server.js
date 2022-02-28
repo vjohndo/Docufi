@@ -1,6 +1,5 @@
 // Packages for express
 const express = require("express");
-const textAnalysisController = require("./controllers/textAnalysis");
 const fileController = require("./controllers/FileController");
 const documentController = require("./controllers/DocumentController")
 

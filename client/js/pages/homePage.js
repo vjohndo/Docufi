@@ -129,6 +129,7 @@ function uploadFile(selectedFile) {
                     completeProgressBar();
                     // removeLoadingIcon();
                     addItemToSelectedZone(OriginalName, FileFormat, FileName);
+                    console.log('axios post is OKAY')
                 });
 
             })
