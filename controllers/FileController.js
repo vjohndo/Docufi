@@ -57,6 +57,7 @@ router.post("/", upload.array("files"), async (req, res) => {
         // Call API / Analyse Text
         analyzeAndProcessDocuments(extractedData.text).then(async res => {
             fileInfo.TextAnalysis = res;
+            console.log(fileInfo);
             fileInfo.Sentiment = res.sentiment.documents[0].sentiment;
             fileInfo.ConfidenceScores = res.sentiment.documents[0].confidenceScores;
             fileInfo.Processed = true;
