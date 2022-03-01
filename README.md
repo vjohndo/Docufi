@@ -42,6 +42,14 @@ This application uses Microsoft Azures Cognitive Services. You will need to crea
 
 Follow a guide [here](https://docs.microsoft.com/en-us/azure/cognitive-services/cognitive-services-apis-create-account?tabs=multiservice%2Cwindows) to create a cognitive services resource
 
+## Socket.io for local development
+
+In the client folder initialize.js needs 
+
+>const socket = io("http://localhost:3000"); // if developing locally, comment out the other socket io
+>const socket = io("https://docufi-app.herokuapp.com/"); // for production add in the endpoint, comment out the other socket io
+
+
 ## Technologies used
 - Node.js
 - Express
