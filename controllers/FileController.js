@@ -66,17 +66,20 @@ router.post("/", upload.array("files"), async (req, res) => {
             const start = new Date();
 
             // "Entity linking" as search terms
-            for (entity of res.entityLinking.documents[0].entities) {
-                if (entity.name) {
-                    let addedEntity = await Entity.insert(entity.name);
-                    if (addedEntity) {
-                        await SearchTerms.connect(dbResult[0].id, addedEntity.id);
-                    } else {
-                        let existingEntity = await Entity.get(entity.name);
-                        await SearchTerms.connect(dbResult[0].id, existingEntity.id);
+            if (res.entityLinking.documents[0].entities) {
+                for (entity of res.entityLinking.documents[0].entities) {
+                    if (entity.name) {
+                        let addedEntity = await Entity.insert(entity.name);
+                        if (addedEntity) {
+                            await SearchTerms.connect(dbResult[0].id, addedEntity.id);
+                        } else {
+                            let existingEntity = await Entity.get(entity.name);
+                            await SearchTerms.connect(dbResult[0].id, existingEntity.id);
+                        }
                     }
                 }
             }
+            
 
             // // "Entity" as search terms --> wasn't working before?
             // for (entity of res.entities.documents[0].entities) {

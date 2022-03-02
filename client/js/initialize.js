@@ -4,6 +4,9 @@ SOCKET.socketId = "";
 // const socket = io("http://localhost:3000");
 const socket = io.connect("https://docufi-app.herokuapp.com/");
 
+axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+axios.defaults.headers.common['Access-Control-Allow-Methods'] = 'GET, PUT, POST, DELETE, PATCH, OPTIONS';
+
 axios.get('/api/sessions').then(response => {
     // render authenticated defaults
     renderAuthenticatedHeader();

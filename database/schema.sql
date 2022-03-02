@@ -52,5 +52,5 @@ CREATE TABLE Searchterms (
 );
 
 -- password123
-INSERT INTO Users (Email, FirstName, LastName, Hash) VALUES ('test1@email.com', 'test', 'login1', '$2b$10$oqdKaka0vRfS6bKBL6qFSuS.MzajDpyRzMUgHS43MOqGsLqchx.5K');
-INSERT INTO Users (Email, FirstName, LastName, Hash) VALUES ('test2@email.com', 'test', 'login2', '$2b$10$oqdKaka0vRfS6bKBL6qFSuS.MzajDpyRzMUgHS43MOqGsLqchx.5K');
+-- INSERT INTO Users (Email, FirstName, LastName, Hash) VALUES ('test1@email.com', 'test', 'login1', '$2b$10$oqdKaka0vRfS6bKBL6qFSuS.MzajDpyRzMUgHS43MOqGsLqchx.5K');
+-- INSERT INTO Users (Email, FirstName, LastName, Hash) VALUES ('test2@email.com', 'test', 'login2', '$2b$10$oqdKaka0vRfS6bKBL6qFSuS.MzajDpyRzMUgHS43MOqGsLqchx.5K');
