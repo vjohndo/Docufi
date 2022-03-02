@@ -25,6 +25,11 @@ const socketIo = require("socket.io");
 const server = createServer(app)
 const io = socketIo(server, { cors: { origin: "*" } });
 
+// Enabling cors
+const cors = require('cors');
+const { append } = require("express/lib/response");
+app.use(cors());
+
 // pass socket io instance via middleware
 app.use((req, res, next) => {
     req.io = io;
@@ -38,6 +43,11 @@ app.use(express.static('client'));
 app.get("/", (req, res) => {
     res.json({message: "hello world"});
 });
+
+// Catching favicon erros
+app.get('/favicon.ico', (req, res) => {
+    res.status(204);
+})
 
 // Session middleware & router
 app.use(
