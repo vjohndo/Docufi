@@ -130,8 +130,8 @@ async function renderDocumentsPage() {
             const docElements = document.querySelectorAll(".list-group-item");
             checkboxesState[event.target.nextElementSibling.innerHTML.toLowerCase()] = !checkboxesState[event.target.nextElementSibling.innerHTML.toLowerCase()];
             
-            for (key in checkboxesState) {
-                if (checkboxesState(key)) {
+            for (const key in checkboxesState) {
+                if (checkboxesState[key]) {
                     continue;
                 } else {
                     docElements.forEach( (listItem) => {
