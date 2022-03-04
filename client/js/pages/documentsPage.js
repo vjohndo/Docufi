@@ -190,7 +190,7 @@ async function getSearchedDocuments(event) {
                 }
             }
 
-            console.log(docList);
+            // console.log(docList);
 
             // For loop below creates list items and appends them to document list
             for (const [documentId, documentObject] of Object.entries(docList)) {
