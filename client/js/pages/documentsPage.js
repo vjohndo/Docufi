@@ -1,3 +1,5 @@
+const checkboxesState = {};
+
 async function renderDocumentsPage() {
 
     // Query the database to pull out the documents
@@ -40,7 +42,6 @@ async function renderDocumentsPage() {
                                 <label class="form-check-label" for="flexSwitchCheckChecked">Mixed</label>
                                 </div>
                             </div>
-                        
                         </div>
                     </div>
                 </div>
@@ -110,8 +111,8 @@ async function renderDocumentsPage() {
             unorderedList.classList.add("doc-list-hover");
             unorderedList.appendChild(docElement);
         } catch {
-            console.log(`${documentObject.originalname} was not analysed as there was no readable text to analyse`)
-            createAlert(`${documentObject.originalname} was not listed as there was no readable text to analyse`, AlertType.INFO);
+            console.log(`${documentObject.originalname} was not analysed as there was no readable text`)
+            createAlert(`${documentObject.originalname} was not listed as there was no readable text`, AlertType.INFO);
         }
 
     }
@@ -123,15 +124,20 @@ async function renderDocumentsPage() {
     // Filter based on sentiment
     const checkboxes = document.querySelectorAll('input[type=checkbox]');
     checkboxes.forEach( (checkbox) => {
+        checkboxesState[checkbox.nextElementSibling.innerHTML.toLowerCase()] = true;
+
         checkbox.addEventListener("change", (event) => {
             const docElements = document.querySelectorAll(".list-group-item");
+            checkboxesState[event.target.nextElementSibling.innerHTML.toLowerCase()] = !checkboxesState[event.target.nextElementSibling.innerHTML.toLowerCase()];
+            
             docElements.forEach( (listItem) => {
-                if (listItem.dataset.sentiment === event.target.nextElementSibling.innerHTML.toLowerCase()) {
-                    listItem.classList.toggle("hidden");
+                listItem.remove("hidden") 
+                if (checkboxesState[listItem.dataset.sentiment]) {
+                    listItem.add("hidden") 
                 }
-            })
-        })
-    })
+            });
+        });
+    });
 }
 
 
