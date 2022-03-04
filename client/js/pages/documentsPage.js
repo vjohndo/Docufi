@@ -84,31 +84,35 @@ async function renderDocumentsPage() {
     
     // For loop below creates list items and appends them to document list
     for (documentObject of uploadedDocuments.data) {
+        try {
+            let docElement = createElement("li", ["list-group-item"], "");
+            docElement.dataset.id = documentObject.id;
+            docElement.dataset.sentiment = documentObject.sentiment;
+            docElement.dataset.positive = documentObject.confidencescores.positive;
+            docElement.dataset.neutral = documentObject.confidencescores.neutral;
+            docElement.dataset.negative = documentObject.confidencescores.negative;
+    
+            let docTitleSpan = createElement("span", [], documentObject.originalname);
+            docTitleSpan.classList.add("span-doc-list");
+            docElement.append(docTitleSpan);
+    
+            let sentimentSpan = createElement("span", [], "sentiment: " + documentObject.sentiment);
+            let confidenceSpan = createElement("span", [], "confidence scores: " + `Positive: ${Math.round(documentObject.confidencescores.positive * 100)} %, Neutral: ${Math.round(documentObject.confidencescores.neutral * 100)} %, Negative: ${Math.round(documentObject.confidencescores.negative * 100)} %`);
+    
+            [sentimentSpan, confidenceSpan].forEach( (x) => {
+                x.classList.add("span-doc-list-subtitle");
+                docElement.append(x);
+            });
+            
+            docElement.addEventListener('click', onDocumentsSelected);
+    
+            const unorderedList = document.getElementById("documentList");
+            unorderedList.classList.add("doc-list-hover");
+            unorderedList.appendChild(docElement);
+        } catch {
+            createAlert(`${documentObject.originalname} was not analysed as there was not text to analyse`, AlertType.INFO);
+        }
 
-        let docElement = createElement("li", ["list-group-item"], "");
-        docElement.dataset.id = documentObject.id;
-        docElement.dataset.sentiment = documentObject.sentiment;
-        docElement.dataset.positive = documentObject.confidencescores.positive;
-        docElement.dataset.neutral = documentObject.confidencescores.neutral;
-        docElement.dataset.negative = documentObject.confidencescores.negative;
-
-        let docTitleSpan = createElement("span", [], documentObject.originalname);
-        docTitleSpan.classList.add("span-doc-list");
-        docElement.append(docTitleSpan);
-
-        let sentimentSpan = createElement("span", [], "sentiment: " + documentObject.sentiment);
-        let confidenceSpan = createElement("span", [], "confidence scores: " + `Positive: ${Math.round(documentObject.confidencescores.positive * 100)} %, Neutral: ${Math.round(documentObject.confidencescores.neutral * 100)} %, Negative: ${Math.round(documentObject.confidencescores.negative * 100)} %`);
-
-        [sentimentSpan, confidenceSpan].forEach( (x) => {
-            x.classList.add("span-doc-list-subtitle");
-            docElement.append(x);
-        });
-        
-        docElement.addEventListener('click', onDocumentsSelected);
-
-        const unorderedList = document.getElementById("documentList");
-        unorderedList.classList.add("doc-list-hover");
-        unorderedList.appendChild(docElement);
     }
 
     // Adding event listener to search bar... automatically updates so can disable searching
