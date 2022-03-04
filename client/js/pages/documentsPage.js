@@ -8,6 +8,11 @@ async function renderDocumentsPage() {
         <!-- Placeholder for the documents list -->
         <div class="container">
             <div class="row">
+                <div class="col-md-5 document-wrapper">
+                    <h6 class="text-secondary">Documents List</h6>
+                    <ul id="documentList" class="list-group">
+                    </ul>
+                </div>
                 <div class="col-md-7 search-div">
                     <h6 class="text-secondary">Search Tools</h6>
                     <div id="search-wrapper" class="list-group">
@@ -38,11 +43,6 @@ async function renderDocumentsPage() {
                         
                         </div>
                     </div>
-                </div>
-                <div class="col-md-5 document-wrapper">
-                    <h6 class="text-secondary">Documents List</h6>
-                    <ul id="documentList" class="list-group">
-                    </ul>
                 </div>
             </div>
         </div>
@@ -110,7 +110,8 @@ async function renderDocumentsPage() {
             unorderedList.classList.add("doc-list-hover");
             unorderedList.appendChild(docElement);
         } catch {
-            createAlert(`${documentObject.originalname} was not analysed as there was not text to analyse`, AlertType.INFO);
+            console.log(`${documentObject.originalname} was not analysed as there was no readable text to analyse`)
+            createAlert(`${documentObject.originalname} was not listed as there was no readable text to analyse`, AlertType.INFO);
         }
 
     }
