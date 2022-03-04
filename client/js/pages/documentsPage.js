@@ -131,9 +131,9 @@ async function renderDocumentsPage() {
             checkboxesState[event.target.nextElementSibling.innerHTML.toLowerCase()] = !checkboxesState[event.target.nextElementSibling.innerHTML.toLowerCase()];
             
             docElements.forEach( (listItem) => {
-                listItem.remove("hidden") 
+                listItem.classList.remove("hidden") 
                 if (checkboxesState[listItem.dataset.sentiment]) {
-                    listItem.add("hidden") 
+                    listItem.classList.add("hidden") 
                 }
             });
         });
