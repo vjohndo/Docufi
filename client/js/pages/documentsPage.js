@@ -130,12 +130,19 @@ async function renderDocumentsPage() {
             const docElements = document.querySelectorAll(".list-group-item");
             checkboxesState[event.target.nextElementSibling.innerHTML.toLowerCase()] = !checkboxesState[event.target.nextElementSibling.innerHTML.toLowerCase()];
             
-            docElements.forEach( (listItem) => {
-                listItem.classList.remove("hidden") 
-                if (checkboxesState[listItem.dataset.sentiment]) {
-                    listItem.classList.add("hidden") 
+            for (key in checkboxesState) {
+                if (checkboxesState(key)) {
+                    continue;
+                } else {
+                    docElements.forEach( (listItem) => {
+                        listItem.classList.remove("hidden") 
+                        if (checkboxesState[listItem.dataset.sentiment]) {
+                            listItem.classList.add("hidden") 
+                        }
+                    });
+                    break;
                 }
-            });
+            }
         });
     });
 }
