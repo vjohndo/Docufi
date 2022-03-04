@@ -24,8 +24,6 @@ const Files = {
         return await db.query(sql).then(dbRes => dbRes.rows[0]);
     },
     async getSearchedFiles(email, searchTerms) {
-        console.log("passed through the search");
-        console.log(searchTerms)
         const sql = {
             text: 'SELECT files.originalname, files.id, files.sentiment, files.confidencescores, entities.entity FROM files INNER JOIN searchterms ON files.id = searchterms.filesid INNER JOIN entities ON entities.id = searchterms.entitiesid INNER JOIN users ON users.id = files.userid WHERE users.email = $1',
             values: [email]

@@ -5,7 +5,7 @@ function renderAuthenticatedHeader() {
     header.innerHTML = `
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#"><i class="fas fa-book-open"></i> Docufi</a>
+            <a class="navbar-brand" href="https://docufi-app.herokuapp.com/"><i class="fas fa-book-open"></i> Docufi</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>
@@ -21,10 +21,6 @@ function renderAuthenticatedHeader() {
                 <a class="nav-link text-danger" id="Logout">Logout</a>
                 </li>
             </ul>
-<!--            <form class="d-flex">-->
-<!--                <input id="searchButton" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">-->
-<!--                <button class="btn btn-outline-success" type="submit">Search</button>-->
-<!--            </form>-->
             </div>
         </div>
     </nav>
@@ -68,15 +64,11 @@ function renderUnauthenticatedHeader() {
     header.innerHTML = `
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#"><i class="fas fa-book-open"></i> Docufi</a>
+            <a class="navbar-brand" href="https://docufi-app.herokuapp.com/"><i class="fas fa-book-open"></i> Docufi</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <form class="d-flex">
-                <input id="searchButton" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
             </div>
         </div>
     </nav>

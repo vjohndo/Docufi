@@ -19,7 +19,7 @@ async function renderDocumentsPage() {
                     <h6 class="text-secondary">Search Tools</h6>
                     <div id="search-wrapper" class="list-group">
                         <form id="search-form" class="d-flex">
-                            <input id="searchInput" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                            <input id="searchInput" class="form-control me-2" type="search" placeholder="Search for identified Named Entities" aria-label="Search">
                             <button class="btn btn-outline-success" type="submit">Search</button>
                         </form>
                         <div class="filter-wrapper">
@@ -52,7 +52,7 @@ async function renderDocumentsPage() {
                 <aside class="col-sm-5 h-100">
                     <h6 class="text-secondary">Raw Text</h6>
                     <div id="document-raw-text-wrapper" class="overflow-auto h-100 raw-text-padding">
-
+                        Select a document from Documents List to view
                     </div>
                 </aside>
                 <main class="col-sm-7 h-100">
@@ -70,10 +70,10 @@ async function renderDocumentsPage() {
                         </div>
                         <form class="overflow-auto card-body tab-content">
                             <div class="tab-pane active" id="analysed-text">
-                                Select a document to view analysis
+                                Select a document from Documents List to view analysis
                             </div>
                             <div class="tab-pane json" id="json" >
-                                <pre id="jsonContent" > Select a document to view analysis </pre>
+                                <pre id="jsonContent" > Select a document from Documents List to view analysis </pre>
                             </div>
     
                         </form>
@@ -111,8 +111,8 @@ async function renderDocumentsPage() {
             unorderedList.classList.add("doc-list-hover");
             unorderedList.appendChild(docElement);
         } catch {
-            console.log(`${documentObject.originalname} was not analysed as there was no readable text`)
-            createAlert(`${documentObject.originalname} was not listed as there was no readable text`, AlertType.INFO);
+            console.log(`"${documentObject.originalname}" was not analysed as there was no readable text`)
+            createAlert(`"${documentObject.originalname}" was not listed as there was no readable text`, AlertType.INFO);
         }
 
     }
@@ -131,7 +131,9 @@ async function renderDocumentsPage() {
             checkboxesState[event.target.nextElementSibling.innerHTML.toLowerCase()] = !checkboxesState[event.target.nextElementSibling.innerHTML.toLowerCase()];
             
             for (const key in checkboxesState) {
-                listItem.classList.remove("hidden") 
+                docElements.forEach( (listItem) => {
+                    listItem.classList.remove("hidden") 
+                });
                 if (checkboxesState[key]) {
                     continue;
                 } else {

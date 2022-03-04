@@ -5,6 +5,10 @@ function renderLogin() {
     // TO DO.. clean up the HTML
     page.innerHTML = `
         <div class="container-md">
+            <h3>Welcome to Docufi</h3>
+            <p>Docufi allows you to upload PDFs and analyse the text using Natural Language Processing.</p>
+            <p>Determine the sentiment of your text, identify key phrases and entities such as people, places and organisations!</p>
+            <p><small>Login or Sign Up to start analysing your files.</small></p>
             <div class="row">
                 <div class="col-md-4">
                     <form id="loginForm" method="POST">
@@ -16,7 +20,7 @@ function renderLogin() {
                             <label for="exampleInputPassword1" class="form-label">Password</label>
                             <input type="password" class="form-control" name="password">
                         </div>
-                        <button id="submitLogin" type="submit" class="btn btn-primary">Submit</button>
+                        <button id="submitLogin" type="submit" class="btn btn-primary">Login</button>
                         <button id="signup" type="submit" class="btn btn-secondary">Sign Up</button>
                     </form>
                 </div>

@@ -1,8 +1,8 @@
 window.SOCKET = {};
 SOCKET.socketId = "";
 // local development
-// const socket = io("http://localhost:3000");
-const socket = io.connect("https://docufi-app.herokuapp.com/");
+const socket = io("http://localhost:3000");
+// const socket = io.connect("https://docufi-app.herokuapp.com/");
 
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 axios.defaults.headers.common['Access-Control-Allow-Methods'] = 'GET, PUT, POST, DELETE, PATCH, OPTIONS';
@@ -44,13 +44,13 @@ socket.on("allFilesAnalysed", () => {
     const pageId = getPageId();
     switch(pageId) {
         case 'home':
-            createAlert('All files are analysed', AlertType.SUCCESS);
+            createAlert('All files are analysed - click on Documents in the nav bar', AlertType.SUCCESS);
             // Remove spinner
             document.querySelector('#accordion-spinner')?.classList.add('hidden');
 
             // update accordion text
             const accordionButton = document.querySelector('.accordion-button');
-            accordionButton.textContent = 'All files analysed';
+            accordionButton.textContent = 'Files analysed - click Documents in nav bar';
             accordionButton.classList.add('text-white');
             accordionButton.classList.add('bg-success');
             const checkIcon = createElement('i', ['fas', 'fa-check'],"");
@@ -58,7 +58,7 @@ socket.on("allFilesAnalysed", () => {
 
             break;
         case 'documents':
-            createAlert('All files are analysed', AlertType.SUCCESS);
+            createAlert('All files are analysed - click on Documents in the nav bar', AlertType.SUCCESS);
             break;
         default:
             console.log(`All files analysed - No condition for pageId: ${pageId}`);

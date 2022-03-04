@@ -4,6 +4,7 @@ function renderSignup() {
     page.replaceChildren("");
     page.innerHTML = `
         <div class="container-md">
+            <h4>Sign Up to Docufi</h4>
             <div class="row">
                 <div class="col-md-4">
                     <form id="signupForm" method="POST">
@@ -28,7 +29,7 @@ function renderSignup() {
                             <label for="signupPasswordConfirm" class="form-label">Confirm Password</label>
                             <input type="password" class="form-control" id="signupPasswordConfirm" name="passwordconfirm">
                         </div>
-                        <button id="submitLogin" type="submit" class="btn btn-primary">Submit</button>
+                        <button id="submitLogin" type="submit" class="btn btn-primary">Login</button>
                     </form>
                 </div>
             </div>
