@@ -131,11 +131,11 @@ async function renderDocumentsPage() {
             checkboxesState[event.target.nextElementSibling.innerHTML.toLowerCase()] = !checkboxesState[event.target.nextElementSibling.innerHTML.toLowerCase()];
             
             for (const key in checkboxesState) {
+                listItem.classList.remove("hidden") 
                 if (checkboxesState[key]) {
                     continue;
                 } else {
                     docElements.forEach( (listItem) => {
-                        listItem.classList.remove("hidden") 
                         if (checkboxesState[listItem.dataset.sentiment]) {
                             listItem.classList.add("hidden") 
                         }
