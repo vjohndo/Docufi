@@ -111,7 +111,7 @@ async function renderDocumentsPage() {
             unorderedList.classList.add("doc-list-hover");
             unorderedList.appendChild(docElement);
         } catch {
-            console.log(`"${documentObject.originalname}" was not analysed as there was no readable text`)
+            // console.log(`"${documentObject.originalname}" was not analysed as there was no readable text`)
             createAlert(`"${documentObject.originalname}" was not listed as there was no readable text`, AlertType.INFO);
         }
 

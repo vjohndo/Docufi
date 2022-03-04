@@ -103,11 +103,11 @@ function uploadFile(selectedFile) {
         onUploadProgress: e => {
             // progress to max at 75% - completion once analysis is done
             const percentCompleted = Math.round( (e.loaded * 100) / e.total * .80);
-            console.log(`Progress ${percentCompleted}`);
+            // console.log(`Progress ${percentCompleted}`);
             let progressBar = page.querySelector('.progress-bar');
             progressBar.style.width = `${percentCompleted}%`;
             if (e.loaded === e.total) {
-                console.log('File upload completed');
+                // console.log('File upload completed');
                 // createAlert('File upload completed', AlertType.SUCCESS);
             }
         }

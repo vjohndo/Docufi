@@ -58,7 +58,7 @@ function renderSignup() {
             const signupMessage = document.getElementById("signupMessage");
             signupMessage.textContent = "Passwords must match!";
             signupMessage.classList.remove("hidden");
-            console.log('Passwords did not match');
+            // console.log('Passwords did not match');
         } else {
             // Create a new form data object
             const formData = new FormData(form)

@@ -19,8 +19,8 @@ axios.get('/api/sessions').then(response => {
 // log socket connection id
 socket.on("connect", () => {
     SOCKET.socketId = socket.id;
-    console.log(`Socket Connected (id): ${SOCKET.socketId}`);
-    console.log(`socket connection id OKAY`);
+    // console.log(`Socket Connected (id): ${SOCKET.socketId}`);
+    // console.log(`socket connection id OKAY`);
 });
 
 socket.on("fileAnalysisComplete", (payload) => {
