@@ -4,7 +4,7 @@ async function renderHomePage() {
     <div class="row">
         <main class="col-sm-8">
             <div class="drop-zone-title-wrapper">
-                <h6>Analyse your documents by uploading to the drop zone</h6>
+                <h6>Analyse your documents by uploading to the drop zone. 5000 Character Limit of text analysed per document</h6>
             </div>
             <div class="drop-zone"> 
                 <span class="btn btn-primary">Browse</span> 

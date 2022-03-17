@@ -49,13 +49,15 @@ router.post("/", upload.array("files"), async (req, res) => {
 
         let dataBuf = fs.readFileSync(file.path);
         const extractedData = await pdf(dataBuf);
+        console.log(extractedData.text.length)
 
         // Write fileInfo to the db after getting file information
         const dbResult = await Files.addFile(fileInfo);
         uploadedItems.push(fileInfo);
 
         // Call API / Analyse Text
-        analyzeAndProcessDocuments(extractedData.text).then(async res => {
+        analyzeAndProcessDocuments(extractedData.text.slice(0,5000)).then(async res => {
+            
             fileInfo.TextAnalysis = res;
             console.log(fileInfo.TextAnalysis.sentiment);
             fileInfo.Sentiment = res.sentiment.documents[0].sentiment;
@@ -79,7 +81,6 @@ router.post("/", upload.array("files"), async (req, res) => {
                     }
                 }
             }
-            
 
             // // "Entity" as search terms --> wasn't working before?
             // for (entity of res.entities.documents[0].entities) {
