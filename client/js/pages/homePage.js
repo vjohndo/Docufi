@@ -4,7 +4,8 @@ async function renderHomePage() {
     <div class="row">
         <main class="col-sm-8">
             <div class="drop-zone-title-wrapper">
-                <h6>Analyse your documents by uploading to the drop zone. 5000 Character Limit of text analysed per document</h6>
+                <h6>Upload your PDFs to the drop zone </h6>
+                <h6 class="help-subtitle">5000 Character Limit of text analysed per document. Save a PDF of a <a href="https://en.wikipedia.org/wiki/Special:Random" target="_blank">random Wikipedia article</a> for testing. <h6>
             </div>
             <div class="drop-zone"> 
                 <span class="btn btn-primary">Browse</span> 
@@ -18,6 +19,7 @@ async function renderHomePage() {
         <aside class="col-sm-4">
             <div class="selected-zone-title-wrapper">
                 <h6>Analysis Status</h6>
+                <h6 class="help-subtitle">Click on Documents tab in nav bar after upload.</h6>
             </div>
             <div class="selected-zone">
                 <div class="accordion hidden" id="fileUploadAccordion">

@@ -43,6 +43,10 @@ a {
   align-items: center;
 }
 
+.help-subtitle {
+  font-size: smaller;
+}
+
 /* spacing for alerts */
 .close {
     text-align: center;

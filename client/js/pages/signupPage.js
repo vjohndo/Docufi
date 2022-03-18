@@ -11,7 +11,7 @@ function renderSignup() {
                         <div class="mb-3">
                             <label for="exampleInputEmail1" class="form-label">Email address</label>
                             <input type="email" class="form-control" aria-describedby="emailHelp" name="email">
-                            <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                            <div id="emailHelp" class="form-text">Feel free to make up an email address for testing!</div>
                         </div>
                         <div class="mb-3">
                             <label for="firstName" class="form-label">First name</label>
