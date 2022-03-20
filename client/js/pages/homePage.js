@@ -5,7 +5,7 @@ async function renderHomePage() {
         <main class="col-sm-8">
             <div class="drop-zone-title-wrapper">
                 <h6>Upload your PDFs to the drop zone </h6>
-                <h6 class="help-subtitle">5000 Character Limit of text analysed per document. Save a PDF of a <a href="https://en.wikipedia.org/wiki/Special:Random" target="_blank">random Wikipedia article</a> for testing. <h6>
+                <h6 class="help-subtitle">5000 Character Limit of text analysed per document. If needed here's a PDF of a <a href="https://en.wikipedia.org/wiki/Special:Random" target="_blank">random Wikipedia article</a> for testing. <h6>
             </div>
             <div class="drop-zone"> 
                 <span class="btn btn-primary">Browse</span> 
