@@ -1,17 +1,21 @@
 # Docufi
 
-Docufi is a Node / Express JS Single Page application that allows users to upload, store and analyse PDF documents. Utilising the Text Analytics API (a feature from Microsoft Azure Cognitive Services) Docufi will mine the unstructured text and identify key phrases, entities, and sentiment. This allows you to better understand common topics and trends without having to read through all the text. Upload your PDFs for processing and gain a deeper understanding of your documents.
+Docufi is a Node / Express JS Single Page Application that allows users to upload, store and analyse PDF documents. Utilising the Text Analytics API (a feature from Microsoft Azure Cognitive Services) Docufi will mine the unstructured text and identify key phrases, entities, and sentiment. This allows you to better understand common topics and trends without having to read through all the text. Upload your PDFs for processing and gain a deeper understanding of your documents.
 
 >Login to the site
+
 ![PDF analysis screenshot](./.readme_imgs/login.png)
 
 >Upload your PDF files 
+
 ![PDF analysis screenshot](./.readme_imgs/pdf_upload.png)
 
->Analyse the text for sentiment, phrases, entities and automatic linking
+>Analyse the files for sentiment, phrases, entities. Use the filters and automatic links to entities
+
 ![PDF analysis output](./.readme_imgs/pdf_analysis.png)
 
->JSON output available
+>JSON output of the text analysis is also available
+
 ![PDF analysis JSON output](./.readme_imgs/pdf_analysis_json.png)
 
 # Setup
@@ -56,11 +60,10 @@ Follow a guide [here](https://docs.microsoft.com/en-us/azure/cognitive-services/
 
 ## Socket.io for local development
 
-In the client folder initialize.js needs 
+In the client folder initialize.js needs update the environment URL depending on whether you're in production of working locally.
 
->const socket = io("http://localhost:3000"); // if developing locally, comment out the other socket io
->const socket = io("https://docufi-app.herokuapp.com/"); // for production add in the endpoint, comment out the other socket io
-
+> const ENV_URL = "http://localhost:3000" // local development\
+> const ENV_URL = "http://productionsite.com" // production endpoint
 
 ## Technologies used
 - Node.js
