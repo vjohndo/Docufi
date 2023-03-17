@@ -82,19 +82,6 @@ router.post("/", upload.array("files"), async (req, res) => {
                 }
             }
 
-            // // "Entity" as search terms --> wasn't working before?
-            // for (entity of res.entities.documents[0].entities) {
-            //     if (entity.text) {
-            //         let addedEntity = await Entity.insert(entity.text);
-            //         if (addedEntity) {
-            //             await SearchTerms.connect(dbResult[0].id, addedEntity.id);
-            //         } else {
-            //             let existingEntity = await Entity.get(entity.text);
-            //             await SearchTerms.connect(dbResult[0].id, existingEntity.id);
-            //         }
-            //     }
-            // }
-
             let end = new Date() - start;
             console.info('Execution time: %dms', end);
 
