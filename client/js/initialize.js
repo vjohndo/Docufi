@@ -1,8 +1,8 @@
 window.SOCKET = {};
 SOCKET.socketId = "";
-// local development
-// const socket = io("http://localhost:3000");
-const socket = io.connect("https://docufi-app.herokuapp.com/");
+// local development, change URL to production url when needed.
+const ENV_URL = "http://localhost:3000"
+const socket = io(ENV_URL); 
 
 axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 axios.defaults.headers.common['Access-Control-Allow-Methods'] = 'GET, PUT, POST, DELETE, PATCH, OPTIONS';

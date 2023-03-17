@@ -6,7 +6,7 @@ Docufi is a Node / Express JS Single Page application that allows users to uploa
 
 ## Clone the Repo
 
->`git clone git@github.com:upp22/Docufi.git`
+>`git clone git@github.com:vjohndo/docufi.git`
 
 ## Install Dependencies
 
@@ -70,7 +70,8 @@ In the client folder initialize.js needs
 
 ## Deployment Pipeline
 
-We've deployed this app to an Azure App Service which enables continuous deployment from Github. The build workflow for our azure app service public instance is initiated by pushing the `deploy/azure` branch. 
+Previously we've deployed this app to an Azure App Service which enables continuous deployment from Github. 
+The build workflow for our azure app service public instance is initiated by pushing the `deploy/azure` branch. 
 
 # Contributors
 - [@upp22](https://github.com/upp22) (Shaunn Diamond)

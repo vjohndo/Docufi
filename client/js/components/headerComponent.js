@@ -5,7 +5,7 @@ function renderAuthenticatedHeader() {
     header.innerHTML = `
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="https://docufi-app.herokuapp.com/"><i class="fas fa-book-open"></i> Docufi</a>
+            <a class="navbar-brand" href="${ENV_URL}"><i class="fas fa-book-open"></i> Docufi</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>
@@ -64,7 +64,7 @@ function renderUnauthenticatedHeader() {
     header.innerHTML = `
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="https://docufi-app.herokuapp.com/"><i class="fas fa-book-open"></i> Docufi</a>
+            <a class="navbar-brand" href="${ENV_URL}"><i class="fas fa-book-open"></i> Docufi</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>
