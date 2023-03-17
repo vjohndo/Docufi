@@ -2,10 +2,17 @@
 
 Docufi is a Node / Express JS Single Page application that allows users to upload, store and analyse PDF documents. Utilising the Text Analytics API (a feature from Microsoft Azure Cognitive Services) Docufi will mine the unstructured text and identify key phrases, entities, and sentiment. This allows you to better understand common topics and trends without having to read through all the text. Upload your PDFs for processing and gain a deeper understanding of your documents.
 
-![PDF analysis JSON output](./.readme_imgs/pdf_analysis_json.png)
-![PDF analysis output](./.readme_imgs/pdf_analysis.png)
-![PDF analysis screenshot](./.readme_imgs/pdf_upload.png)
+>Login to the site
 ![PDF analysis screenshot](./.readme_imgs/login.png)
+
+>Upload your PDF files 
+![PDF analysis screenshot](./.readme_imgs/pdf_upload.png)
+
+>Analyse the text for sentiment, phrases, entities and automatic linking
+![PDF analysis output](./.readme_imgs/pdf_analysis.png)
+
+>JSON output available
+![PDF analysis JSON output](./.readme_imgs/pdf_analysis_json.png)
 
 # Setup
 
