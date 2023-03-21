@@ -1,6 +1,6 @@
 # Docufi
 
-Docufi is a Node / Express JS Single Page Application that allows users to upload, store and analyse PDF documents. Utilising the Text Analytics API (a feature from Microsoft Azure Cognitive Services) Docufi will mine the unstructured text and identify key phrases, entities, and sentiment. This allows you to better understand common topics and trends without having to read through all the text. Upload your PDFs for processing and gain a deeper understanding of your documents.
+Docufi is a Single Page Application that allows users to upload, store and analyse PDF documents. Utilising Microsoft Azure Cognitive Services for Text Analytics, Docufi will mine the unstructured text to identify key phrases, entities, and sentiment. This allows you to better understand common topics and trends without having to read through all the text. Upload your PDFs for processing and gain a deeper understanding of your documents. Built using Node, Express and Postgres. 
 
 >Login to the site
 
@@ -28,7 +28,7 @@ Docufi is a Node / Express JS Single Page Application that allows users to uploa
 
 Node.js is required to run this app locally. 
 
-To install the dependencies, run this from the project directory\
+To install the dependencies, run this from the project directory.
 
 >`npm install`
 
@@ -50,17 +50,17 @@ DB_NAME=shouldbeDocufi
 Create your postgres database and name it docufi:
 >`createdb docufi`
 
-Run schema.sql against your 'docufi' database to create tables
+Run *schema.sql* (found in the databse directory) against your 'docufi' database to create tables.
 
 ## Azure Cognitive Services
 
 This application uses Microsoft Azures Cognitive Services. You will need to create a Cognitive Services resource using the Azure Portal (a free account can be created). 
 
-Follow a guide [here](https://docs.microsoft.com/en-us/azure/cognitive-services/cognitive-services-apis-create-account?tabs=multiservice%2Cwindows) to create a cognitive services resource
+Follow a guide [here](https://docs.microsoft.com/en-us/azure/cognitive-services/cognitive-services-apis-create-account?tabs=multiservice%2Cwindows) to create a cognitive services resource.
 
 ## Socket.io for local development
 
-In the client folder initialize.js needs update the environment URL depending on whether you're in production of working locally.
+In the client folder *initialize.js* needs to be updated with the environment URL depending on whether you're in production or developing locally.
 
 > const ENV_URL = "http://localhost:3000" // local development\
 > const ENV_URL = "http://productionsite.com" // production endpoint
@@ -77,7 +77,7 @@ In the client folder initialize.js needs update the environment URL depending on
 - Multiple file uploading
 - User logins / Sign up
 - NLP Results
-- Socket.io for server > client notifications
+- Socket.io for server -> client notifications
 
 ## Potential future updates
 - Expand the search capability to permit filtering by other entity types
@@ -89,5 +89,5 @@ Previously we've deployed this app to an Azure App Service which enables continu
 The build workflow for our azure app service public instance is initiated by pushing the `deploy/azure` branch. 
 
 # Contributors
-- [@upp22](https://github.com/upp22) (Shaunn Diamond)
 - [@vjohndo](https://github.com/vjohndo) (John Do)
+- [@upp22](https://github.com/upp22) (Shaunn Diamond)
